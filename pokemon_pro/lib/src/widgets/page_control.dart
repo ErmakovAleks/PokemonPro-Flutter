@@ -22,7 +22,6 @@ class PageControl extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 6),
                   child: InkWell(
                     onTap: () {
-                      print('<!!> page = $index');
                       onUpdatePage(index);
                     },
                     child: Container(

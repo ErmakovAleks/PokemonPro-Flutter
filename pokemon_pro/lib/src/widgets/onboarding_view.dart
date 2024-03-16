@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import '../widgets/page_control.dart';
-import '../widgets/page_one.dart';
-import '../widgets/page_two.dart';
-import '../widgets/page_three.dart';
-import '../widgets/onboarding_button.dart';
+import 'package:pokemon_pro/src/routes/routes.dart';
+import 'page_control.dart';
+import 'page_one.dart';
+import 'page_two.dart';
+import 'page_three.dart';
+import 'onboarding_button.dart';
 
-class OnboardingPageView extends StatefulWidget {
-  const OnboardingPageView({super.key});
+class OnboardingView extends StatefulWidget {
+  const OnboardingView({super.key});
 
   @override
-  State<OnboardingPageView> createState() => _OnboardingPageViewState();
+  State<OnboardingView> createState() => _OnboardingViewState();
 }
 
-class _OnboardingPageViewState extends State<OnboardingPageView> {
+class _OnboardingViewState extends State<OnboardingView> {
   final _pageController = PageController(initialPage: 0);
   int _activePage = 0;
   final List<Widget> _pages = [
@@ -22,7 +23,6 @@ class _OnboardingPageViewState extends State<OnboardingPageView> {
   ];
 
   void _updatePage(int page) {
-    print('<!> page = $page');
     setState(() {
       _activePage = page;
       _pageController.animateToPage(
@@ -31,14 +31,6 @@ class _OnboardingPageViewState extends State<OnboardingPageView> {
         curve: Curves.easeIn,
       );
     });
-  }
-
-  void _skipPressed() {
-    print('<!> Skip pressed!');
-  }
-
-  void _nextPressed() {
-    print('<!> Next pressed!');
   }
 
   @override
@@ -69,7 +61,8 @@ class _OnboardingPageViewState extends State<OnboardingPageView> {
                 children: [
                   OnboardingButton(
                     title: 'Skip',
-                    onPressed: _skipPressed,
+                    onPressed: () =>
+                        context.pageState.value = ActivePage.dashboard,
                   ),
                   PageControl(
                       pagesCount: _pages.length,
@@ -77,7 +70,18 @@ class _OnboardingPageViewState extends State<OnboardingPageView> {
                       onUpdatePage: _updatePage),
                   OnboardingButton(
                     title: 'Next',
-                    onPressed: _nextPressed,
+                    onPressed: () {
+                      _activePage += 1;
+                      if (_activePage >= _pages.length) {
+                        context.pageState.value = ActivePage.dashboard;
+                      } else {
+                        _pageController.animateToPage(
+                          _activePage % _pages.length,
+                          duration: Duration(milliseconds: 200),
+                          curve: Curves.easeIn,
+                        );
+                      }
+                    },
                   )
                 ],
               ),

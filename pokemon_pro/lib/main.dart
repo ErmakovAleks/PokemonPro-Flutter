@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'src/widgets/onboarding_page_view.dart';
+import '/src/routes/routes.dart';
+import '/src/application/app.dart';
 
 void main() {
-  runApp(MaterialApp(home: const OnboardingPageView()));
+  runApp(InheritedNavigatorState(
+      pageState: ValueNotifier<ActivePage>(ActivePage.onboarding),
+      child: const App()));
 }
