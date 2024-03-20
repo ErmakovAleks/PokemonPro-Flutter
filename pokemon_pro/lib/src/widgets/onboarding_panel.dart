@@ -31,7 +31,6 @@ class OnboardingPanel extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(color: Colors.blue),
               Text(
                 title,
                 style:
