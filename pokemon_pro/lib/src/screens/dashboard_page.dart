@@ -1,67 +1,184 @@
 import 'package:flutter/material.dart';
-import 'package:pokemon_pro/src/models/pokemon_detail.dart';
+import '/src/widgets/dashboard_mosaic_tile.dart';
+import '/src/widgets/dashboard_list_tile.dart';
 import '/src/models/pokemon_list_model.dart';
-import '../providers/dashboard_provider.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import '/src/providers/dashboard_provider.dart';
+import '/src/widgets/dashboard_search_bar.dart';
+import '/src/constants/pokofonts.dart';
+import '/src/constants/pokocolors.dart';
+import '/src/constants/pokoimages.dart';
+import '/src/routes/routes.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final provider = DashboardProvider();
-    final pokemonList = provider.pokemonList();
+  State<DashboardPage> createState() => _DashboardPageState();
+}
 
+class _DashboardPageState extends State<DashboardPage> {
+  bool _isList = true;
+  String searchText = '';
+  final provider = DashboardProvider();
+  late final Future<List<PokemonModel>?> pokemonList;
+
+  FutureBuilder pokemonTile(String name) {
+    return FutureBuilder(
+      future: provider.detail(name),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasData) {
+          return _isList
+              ? DashboardListTile(details: snapshot.data!)
+              : DashboardMosaicTile(details: snapshot.data!);
+        } else {
+          return const Icon(Icons.error);
+        }
+      },
+    );
+  }
+
+  void onUpdateSearch(String text) {
+    setState(() {
+      searchText = text;
+    });
+  }
+
+  @override
+  void initState() {
+    pokemonList = provider.pokemonList();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: FutureBuilder(
-          future: pokemonList,
-          builder: (BuildContext context,
-              AsyncSnapshot<List<PokemonModel>?> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Индикатор загрузки
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else if (snapshot.hasData) {
-              return ListView.builder(
-                itemCount: snapshot.data?.length ?? 0,
-                itemExtent: 300,
-                itemBuilder: (context, index) {
-                  // return Text(snapshot.data?[index].name ?? '');
-                  return FutureBuilder(
-                    future: provider.detail(snapshot.data?[index].name ?? ''),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<PokemonDetail> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator(); // Индикатор загрузки
-                      } else if (snapshot.hasError) {
-                        return Container(
-                          height: 300,
-                          child: const Icon(
-                              Icons.error), //Text('Error: ${snapshot.error}'),
-                        );
-                      } else if (snapshot.hasData) {
-                        return Container(
-                          height: 300,
-                          child: CachedNetworkImage(
-                            imageUrl: '${snapshot.data?.sprite}',
-                            placeholder: (context, url) =>
-                                CircularProgressIndicator(),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                          ),
-                        );
-                      } else {
-                        return Text('No data');
-                      }
-                    },
-                  );
-                },
-              );
-            } else {
-              return Text('No data');
-            }
-          }),
+      appBar: appBar(),
+      body:
+          body(pokemonList: pokemonList, provider: provider, context: context),
+    );
+  }
+
+  PreferredSizeWidget appBar() {
+    return AppBar(
+      backgroundColor: PokoColors.wildSand,
+      leading: IconButton(
+        onPressed: () => context.pageState.value = ActivePage.dashboard,
+        icon: SizedBox(
+          width: 24,
+          height: 24,
+          child: Image.asset(PokoImages.logo),
+        ),
+      ),
+      actions: [
+        IconButton(
+            onPressed: () {
+              setState(() {
+                _isList = !_isList;
+              });
+            },
+            icon: SizedBox(
+              width: 24,
+              height: 24,
+              child: _isList
+                  ? Image.asset(PokoImages.collectionRepresentIcon)
+                  : Image.asset(PokoImages.tableRepresentIcon),
+            )),
+      ],
+      bottom: title(),
+    );
+  }
+
+  PreferredSize title() {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(52),
+      child: Container(
+        padding: const EdgeInsets.only(left: 30),
+        child: const Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'All Pokemon',
+            style: TextStyle(
+                fontSize: 34,
+                fontFamily: PokoFonts.jakartaSans,
+                fontWeight: FontWeight.w900),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget sliverAppBar(Function(String) onUpdateSearch) {
+    return SliverAppBar(
+      automaticallyImplyLeading: false,
+      floating: true,
+      snap: true,
+      backgroundColor: PokoColors.wildSand,
+      flexibleSpace: FlexibleSpaceBar(
+        title: DashboardSearchBar(
+          onUpdateSearch: (text) => onUpdateSearch(text),
+        ),
+        titlePadding: EdgeInsets.zero,
+      ),
+    );
+  }
+
+  Widget body(
+      {required Future<List<PokemonModel>?> pokemonList,
+      required DashboardProvider provider,
+      required BuildContext context}) {
+    return FutureBuilder(
+      future: pokemonList,
+      builder: (context, snapshot) {
+        Widget pokemonSliver;
+        if (snapshot.connectionState == ConnectionState.waiting ||
+            snapshot.hasData) {
+          if (_isList) {
+            pokemonSliver = SliverFixedExtentList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                List<PokemonModel>? filtered = snapshot.data
+                    ?.where((element) => element.name.contains(searchText))
+                    .toList();
+                return pokemonTile(filtered?[index].name ?? '');
+              }),
+              itemExtent: 143,
+            );
+          } else {
+            pokemonSliver = SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverGrid(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  return pokemonTile(snapshot.data?[index].name ?? '');
+                }),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 9,
+                    mainAxisSpacing: 9,
+                    mainAxisExtent: 199),
+              ),
+            );
+          }
+        } else {
+          pokemonSliver = const SliverToBoxAdapter(child: Icon(Icons.error));
+        }
+
+        return Container(
+          color: PokoColors.wildSand,
+          child: CustomScrollView(
+            slivers: [
+              sliverAppBar(onUpdateSearch),
+              SliverToBoxAdapter(
+                child: Container(
+                  height: 8,
+                  color: PokoColors.wildSand,
+                ),
+              ),
+              pokemonSliver
+            ],
+          ),
+        );
+      },
     );
   }
 }

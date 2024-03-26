@@ -31,7 +31,6 @@ class DashboardProvider implements Source {
   Future<PokemonDetail> detail(String name) async {
     final response =
         await client.get(Uri.parse('$_root2/pokedex/pokemon/$name'));
-    print('<!> response.url = ${response.request?.url}');
     final parsedJson = json.decode(response.body);
 
     return PokemonDetail.fromJson(parsedJson[0]);

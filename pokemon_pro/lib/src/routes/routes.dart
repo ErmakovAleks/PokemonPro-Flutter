@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 enum ActivePage {
   onboarding('/'),
   dashboard('/dashboard'),
-  detail('/detail');
+  detail('/detail'),
+  aboutUs('/aboutUs');
 
   final String path;
 

@@ -28,13 +28,14 @@ class OnboardingPanel extends StatelessWidget {
               ],
             ),
           ),
+          const Spacer(),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
                 title,
-                style:
-                    TextStyle(fontFamily: PokoFonts.paytoneOne, fontSize: 24.0),
+                style: const TextStyle(
+                    fontFamily: PokoFonts.paytoneOne, fontSize: 24.0),
               ),
               const SizedBox(
                 height: 24,
