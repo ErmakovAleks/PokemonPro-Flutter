@@ -7,6 +7,9 @@ class PokoColors {
   static const corn = Color.fromARGB(255, 214, 186, 61);
   static const gold = Color.fromARGB(255, 249, 216, 74);
 
+  static const gradientStart = Color.fromARGB(255, 65, 193, 54);
+  static const gradientFinish = Color.fromARGB(255, 0, 102, 255);
+
   static const fire = Color.fromARGB(255, 255, 233, 233);
   static const water = Color.fromARGB(255, 219, 227, 255);
   static const ice = Color.fromARGB(255, 211, 245, 255);

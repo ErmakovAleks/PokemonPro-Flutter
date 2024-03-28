@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokemon_pro/src/routes/detail_state.dart';
 import '/src/widgets/dashboard_mosaic_tile.dart';
 import '/src/widgets/dashboard_list_tile.dart';
 import '/src/models/pokemon_list_model.dart';
@@ -30,8 +31,20 @@ class _DashboardPageState extends State<DashboardPage> {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasData) {
           return _isList
-              ? DashboardListTile(details: snapshot.data!)
-              : DashboardMosaicTile(details: snapshot.data!);
+              ? InkWell(
+                  child: DashboardListTile(details: snapshot.data!),
+                  onTap: () {
+                    context.detail.value = snapshot.data;
+                    context.pageState.value = ActivePage.detail;
+                  },
+                )
+              : InkWell(
+                  child: DashboardMosaicTile(details: snapshot.data!),
+                  onTap: () {
+                    context.detail.value = snapshot.data;
+                    context.pageState.value = ActivePage.detail;
+                  },
+                );
         } else {
           return const Icon(Icons.error);
         }
@@ -109,7 +122,7 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget sliverAppBar(Function(String) onUpdateSearch) {
+  Widget sliverAppBar() {
     return SliverAppBar(
       automaticallyImplyLeading: false,
       floating: true,
@@ -134,12 +147,12 @@ class _DashboardPageState extends State<DashboardPage> {
         Widget pokemonSliver;
         if (snapshot.connectionState == ConnectionState.waiting ||
             snapshot.hasData) {
+          List<PokemonModel>? filtered = snapshot.data
+              ?.where((element) => element.name.contains(searchText))
+              .toList();
           if (_isList) {
             pokemonSliver = SliverFixedExtentList(
               delegate: SliverChildBuilderDelegate((context, index) {
-                List<PokemonModel>? filtered = snapshot.data
-                    ?.where((element) => element.name.contains(searchText))
-                    .toList();
                 return pokemonTile(filtered?[index].name ?? '');
               }),
               itemExtent: 143,
@@ -149,7 +162,7 @@ class _DashboardPageState extends State<DashboardPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverGrid(
                 delegate: SliverChildBuilderDelegate((context, index) {
-                  return pokemonTile(snapshot.data?[index].name ?? '');
+                  return pokemonTile(filtered?[index].name ?? '');
                 }),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
@@ -167,7 +180,7 @@ class _DashboardPageState extends State<DashboardPage> {
           color: PokoColors.wildSand,
           child: CustomScrollView(
             slivers: [
-              sliverAppBar(onUpdateSearch),
+              sliverAppBar(),
               SliverToBoxAdapter(
                 child: Container(
                   height: 8,

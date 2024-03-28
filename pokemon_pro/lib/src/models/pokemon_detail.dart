@@ -9,6 +9,7 @@ class PokemonDetail {
   final List<Ability> abilities;
   final String weight;
   final String height;
+  final Training training;
   final Uri sprite;
 
   const PokemonDetail._({
@@ -18,6 +19,7 @@ class PokemonDetail {
     required this.abilities,
     required this.weight,
     required this.height,
+    required this.training,
     required this.sprite,
   });
 
@@ -31,6 +33,7 @@ class PokemonDetail {
           json["abilities"].map((item) => Ability.fromJson(item))),
       weight: json['weight'],
       height: json['height'],
+      training: Training.fromJson(json["training"]),
       sprite: Uri.parse(json['sprite']),
     );
   }
@@ -51,6 +54,30 @@ class Ability {
         name: json["name"],
         description: json["description"],
         hidden: json["hidden"],
+      );
+}
+
+class Training {
+  String evYield;
+  String catchRate;
+  String baseFriendship;
+  String baseExp;
+  String growthRate;
+
+  Training._({
+    required this.evYield,
+    required this.catchRate,
+    required this.baseFriendship,
+    required this.baseExp,
+    required this.growthRate,
+  });
+
+  factory Training.fromJson(Map<String, dynamic> json) => Training._(
+        evYield: json["evYield"],
+        catchRate: json["catchRate"],
+        baseFriendship: json["baseFriendship"],
+        baseExp: json["baseExp"],
+        growthRate: json["growthRate"],
       );
 }
 

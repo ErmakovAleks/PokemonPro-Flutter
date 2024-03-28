@@ -1,4 +1,5 @@
 class PokoImages {
+  static const back = 'assets/images/back.png';
   static const bg = 'assets/images/bg.png';
   static const largeSilgouette = 'assets/images/largeSilhouette.png';
   static const largePokemon = 'assets/images/largePokemon.png';

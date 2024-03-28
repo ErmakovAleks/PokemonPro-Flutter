@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:pokemon_pro/src/constants/pokocolors.dart';
-import 'package:pokemon_pro/src/constants/pokofonts.dart';
-import '/src/widgets/dashboard_tag.dart';
-import '/src/models/pokemon_detail.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:flutter/material.dart';
+import '/src/constants/pokocolors.dart';
+import '/src/constants/pokofonts.dart';
+import '/src/widgets/dashboard_tag.dart';
+import '/src/models/pokemon_detail.dart';
 
 class DashboardListTile extends StatelessWidget {
   final PokemonDetail details;
