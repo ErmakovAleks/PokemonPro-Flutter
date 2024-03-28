@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pokemon_pro/src/constants/pokocolors.dart';
-import 'package:pokemon_pro/src/constants/pokofonts.dart';
-import 'package:pokemon_pro/src/constants/pokoimages.dart';
+import '/src/constants/pokocolors.dart';
+import '/src/constants/pokofonts.dart';
+import '/src/constants/pokoimages.dart';
 import '/src/routes/routes.dart';
 
 class AboutUsPage extends StatelessWidget {

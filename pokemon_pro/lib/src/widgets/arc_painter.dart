@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
-
 import '/src/constants/pokocolors.dart';
 
 class ArcPainter extends CustomPainter {

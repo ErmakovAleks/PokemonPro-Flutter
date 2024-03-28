@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:flutter/material.dart';
+import 'package:pokemon_pro/src/widgets/poke_spinner.dart';
 import '/src/constants/pokocolors.dart';
 import '/src/constants/pokofonts.dart';
 import '/src/widgets/dashboard_tag.dart';
@@ -71,8 +72,9 @@ class DashboardListTile extends StatelessWidget {
                       }),
                   CachedNetworkImage(
                     imageUrl: '${details.sprite}',
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
+                    placeholder: (context, url) => const PokeSpinner(),
+                    maxWidthDiskCache: 300,
+                    maxHeightDiskCache: 300,
                     fit: BoxFit.cover,
                   ),
                 ],

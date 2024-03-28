@@ -77,6 +77,8 @@ class DashboardMosaicTile extends StatelessWidget {
                     }),
                 CachedNetworkImage(
                   imageUrl: '${details.sprite}',
+                  maxWidthDiskCache: 300,
+                  maxHeightDiskCache: 300,
                   fit: BoxFit.cover,
                 ),
               ],

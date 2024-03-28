@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pokemon_pro/src/widgets/poke_spinner.dart';
+import '../providers/source.dart';
 import '/src/routes/detail_state.dart';
 import '/src/widgets/dashboard_mosaic_tile.dart';
 import '/src/widgets/dashboard_list_tile.dart';
@@ -20,7 +22,7 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   bool _isList = true;
   String searchText = '';
-  final provider = DashboardProvider();
+  final Source provider = DashboardProvider();
   late final Future<List<PokemonModel>?> pokemonList;
 
   FutureBuilder pokemonTile(String name) {
@@ -28,7 +30,7 @@ class _DashboardPageState extends State<DashboardPage> {
       future: provider.detail(name),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: PokeSpinner());
         } else if (snapshot.hasData) {
           return _isList
               ? InkWell(
@@ -139,7 +141,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget body(
       {required Future<List<PokemonModel>?> pokemonList,
-      required DashboardProvider provider,
+      required Source provider,
       required BuildContext context}) {
     return FutureBuilder(
       future: pokemonList,

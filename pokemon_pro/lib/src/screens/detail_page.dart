@@ -140,6 +140,152 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
+  Widget antropometrics(PokemonDetail? detail) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(
+          '${detail?.name}',
+          style: const TextStyle(
+            fontFamily: PokoFonts.paytoneOne,
+            fontSize: 36,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: tags(detail?.types ?? []),
+        ),
+        const SizedBox(height: 24),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            infoCell(name: 'Height', value: detail?.height.split(' (').first),
+            Container(width: 1, height: 43, color: PokoColors.heather),
+            infoCell(name: 'Weight', value: detail?.weight.split(' (').first),
+            Container(width: 1, height: 43, color: PokoColors.heather),
+            infoCell(name: 'Species', value: 'Seed')
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget tagSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        hashTagBlock(
+            title: 'Abilities',
+            hashTags: ['Keen-eye', 'Tangle-feet', 'Big-pecks']),
+        hashTagBlock(title: 'Moves', hashTags: [
+          'Razor-wind',
+          'Gust',
+          'Fly',
+          'Whirlwind',
+          'Wing-attack',
+          'Sand-attack'
+        ]),
+      ],
+    );
+  }
+
+  Widget avatar(PokemonDetail? detail) {
+    return Container(
+      width: 300,
+      height: 300,
+      decoration: BoxDecoration(
+          color: Colors.white.withAlpha(80),
+          borderRadius: BorderRadius.circular(150)),
+      child: Stack(
+        children: [
+          Center(
+            child: Container(
+              height: 276,
+              width: 276,
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(138),
+              ),
+            ),
+          ),
+          Center(
+            child: Container(
+              height: 262,
+              width: 262,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(131),
+              ),
+              child: Image.network('${detail?.sprite}'),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(6),
+            child: CustomPaint(
+              painter: ArcPainter(
+                  baseExperience: int.parse(detail?.training.baseExp ?? '0')),
+              size: const Size(294, 294),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget infoPanel(PokemonDetail? detail) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24), topRight: Radius.circular(24)),
+          color: Colors.white,
+        ),
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                antropometrics(detail),
+                const SizedBox(height: 24),
+                tagSection(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget baseExperienceIndicator() {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Container(
+        height: 31,
+        width: 31,
+        decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(15.5)),
+            gradient: LinearGradient(
+                colors: [PokoColors.gradientFinish, PokoColors.gradientStart])),
+        child: Center(
+          child: Text(
+            context.detail.value?.training.baseExp ?? '',
+            style: const TextStyle(
+              fontFamily: PokoFonts.jakartaSans,
+              fontSize: 15,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     PokemonDetail? detail = context.detail.value;
@@ -161,169 +307,12 @@ class _DetailPageState extends State<DetailPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         const SizedBox(height: 8),
-                        Container(
-                          width: 300,
-                          height: 300,
-                          decoration: BoxDecoration(
-                              color: Colors.white.withAlpha(80),
-                              borderRadius: BorderRadius.circular(150)),
-                          child: Stack(
-                            children: [
-                              Center(
-                                child: Container(
-                                  height: 276,
-                                  width: 276,
-                                  decoration: BoxDecoration(
-                                    color: backgroundColor,
-                                    borderRadius: BorderRadius.circular(138),
-                                  ),
-                                ),
-                              ),
-                              Center(
-                                child: Container(
-                                  height: 262,
-                                  width: 262,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(131),
-                                  ),
-                                  child: Image.network('${detail?.sprite}'),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(6),
-                                child: CustomPaint(
-                                  painter: ArcPainter(
-                                      baseExperience: int.parse(
-                                          detail?.training.baseExp ?? '0')),
-                                  size: const Size(294, 294),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
+                        avatar(detail),
                         const SizedBox(height: 16),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 24),
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(24),
-                                  topRight: Radius.circular(24)),
-                              color: Colors.white,
-                            ),
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Column(
-                                      // здесь будут размещаться отцентрованные элементы
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          '${detail?.name}',
-                                          style: const TextStyle(
-                                            fontFamily: PokoFonts.paytoneOne,
-                                            fontSize: 36,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: tags(detail?.types ?? []),
-                                        ),
-                                        const SizedBox(height: 24),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            infoCell(
-                                                name: 'Height',
-                                                value: detail?.height
-                                                    .split(' (')
-                                                    .first),
-                                            Container(
-                                                width: 1,
-                                                height: 43,
-                                                color: PokoColors.heather),
-                                            infoCell(
-                                                name: 'Weight',
-                                                value: detail?.weight
-                                                    .split(' (')
-                                                    .first),
-                                            Container(
-                                                width: 1,
-                                                height: 43,
-                                                color: PokoColors.heather),
-                                            infoCell(
-                                                name: 'Species', value: 'Seed')
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 24),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        hashTagBlock(
-                                            title: 'Abilities',
-                                            hashTags: [
-                                              'Keen-eye',
-                                              'Tangle-feet',
-                                              'Big-pecks'
-                                            ]),
-                                        hashTagBlock(title: 'Moves', hashTags: [
-                                          'Razor-wind',
-                                          'Gust',
-                                          'Fly',
-                                          'Whirlwind',
-                                          'Wing-attack',
-                                          'Sand-attack'
-                                        ]),
-                                      ],
-                                    ), // здесь будут размещаться секции с тегами
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                        infoPanel(detail),
                       ],
                     ),
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Container(
-                        height: 31,
-                        width: 31,
-                        decoration: const BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.5)),
-                            gradient: LinearGradient(colors: [
-                              PokoColors.gradientFinish,
-                              PokoColors.gradientStart
-                            ])),
-                        child: Center(
-                          child: Text(
-                            context.detail.value?.training.baseExp ?? '',
-                            style: const TextStyle(
-                              fontFamily: PokoFonts.jakartaSans,
-                              fontSize: 15,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                    baseExperienceIndicator(),
                   ],
                 ),
               ),

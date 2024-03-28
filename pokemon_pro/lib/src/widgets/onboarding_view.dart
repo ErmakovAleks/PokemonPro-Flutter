@@ -77,7 +77,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                       } else {
                         _pageController.animateToPage(
                           _activePage % _pages.length,
-                          duration: Duration(milliseconds: 200),
+                          duration: const Duration(milliseconds: 200),
                           curve: Curves.easeIn,
                         );
                       }

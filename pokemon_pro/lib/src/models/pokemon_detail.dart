@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pokemon_pro/src/constants/pokoimages.dart';
+import '/src/constants/pokoimages.dart';
 import '/src/constants/pokocolors.dart';
 
 class PokemonDetail {

@@ -5,7 +5,8 @@ class PokoColors {
   static const heather = Color.fromARGB(255, 188, 196, 205);
   static const wildSand = Color.fromARGB(255, 245, 245, 245);
   static const corn = Color.fromARGB(255, 214, 186, 61);
-  static const gold = Color.fromARGB(255, 249, 216, 74);
+  static const gold = Color.fromARGB(255, 255, 215, 7);
+  static const darkGold = Color.fromARGB(204, 216, 181, 0);
 
   static const gradientStart = Color.fromARGB(255, 65, 193, 54);
   static const gradientFinish = Color.fromARGB(255, 0, 102, 255);
