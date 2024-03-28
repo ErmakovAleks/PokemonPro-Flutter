@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pokemon_pro/src/routes/detail_state.dart';
+import '/src/routes/detail_state.dart';
 import '/src/widgets/dashboard_mosaic_tile.dart';
 import '/src/widgets/dashboard_list_tile.dart';
 import '/src/models/pokemon_list_model.dart';
@@ -77,7 +77,7 @@ class _DashboardPageState extends State<DashboardPage> {
     return AppBar(
       backgroundColor: PokoColors.wildSand,
       leading: IconButton(
-        onPressed: () => context.pageState.value = ActivePage.dashboard,
+        onPressed: () => context.pageState.value = ActivePage.aboutUs,
         icon: SizedBox(
           width: 24,
           height: 24,
