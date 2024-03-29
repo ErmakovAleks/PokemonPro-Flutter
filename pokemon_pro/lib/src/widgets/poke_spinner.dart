@@ -12,6 +12,7 @@ class PokeSpinner extends StatefulWidget {
 class _PokeSpinnerState extends State<PokeSpinner>
     with TickerProviderStateMixin {
   late AnimationController _controller;
+  late Animation<double> _animation;
 
   @override
   void initState() {
@@ -20,27 +21,24 @@ class _PokeSpinnerState extends State<PokeSpinner>
       vsync: this,
       duration: const Duration(seconds: 1),
     );
-    _controller.repeat();
+
+    _animation = Tween<double>(begin: 0, end: 1).animate(_controller);
+    _controller.repeat(reverse: false);
   }
 
   @override
   Widget build(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween<double>(begin: 0, end: 1),
-      duration: const Duration(seconds: 1),
-      builder: (context, value, child) {
-        return Container(
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return SizedBox(
           height: 36,
           width: 36,
           child: Transform.rotate(
-            angle: 2 * pi * value,
+            angle: 2 * pi * _animation.value,
             child: Image.asset(PokoImages.spinner),
           ),
         );
-      },
-      onEnd: () {
-        _controller.reset();
-        _controller.forward();
       },
     );
   }
