@@ -6,11 +6,12 @@ import '/src/constants/pokocolors.dart';
 import '/src/constants/pokofonts.dart';
 import '/src/widgets/arc_painter.dart';
 import '/src/constants/pokoimages.dart';
-import '/src/routes/detail_state.dart';
-import '/src/routes/routes.dart';
+import '../routes/router.dart';
 
 class DetailPage extends StatefulWidget {
-  const DetailPage({super.key});
+  final PokemonDetail details;
+
+  const DetailPage({required this.details, super.key});
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -27,9 +28,9 @@ class _DetailPageState extends State<DetailPage> {
     return paletteGenerator;
   }
 
-  List<Widget> tags(List<PokeType> types) {
+  List<Widget> tags() {
     List<Widget> tags = [];
-    for (var type in types) {
+    for (var type in widget.details.types) {
       tags.add(DashboardTag(type: type, option: TagOption.full));
     }
 
@@ -116,7 +117,8 @@ class _DetailPageState extends State<DetailPage> {
         color: Colors.white,
       ),
       leading: IconButton(
-        onPressed: () => context.pageState.value = ActivePage.dashboard,
+        onPressed: () =>
+            Navigator.of(context).pushNamed(AppRouteKeys.dashboard),
         icon: SizedBox(
           width: 24,
           height: 24,
@@ -127,7 +129,7 @@ class _DetailPageState extends State<DetailPage> {
         Padding(
           padding: const EdgeInsets.only(right: 16),
           child: Text(
-            '#${context.detail.value?.number.toString().padLeft(3, '0')}',
+            '#${widget.details.number.toString().padLeft(3, '0')}',
             style: const TextStyle(
               fontFamily: PokoFonts.jakartaSans,
               fontWeight: FontWeight.bold,
@@ -140,13 +142,13 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  Widget antropometrics(PokemonDetail? detail) {
+  Widget antropometrics() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
-          '${detail?.name}',
+          widget.details.name,
           style: const TextStyle(
             fontFamily: PokoFonts.paytoneOne,
             fontSize: 36,
@@ -155,15 +157,17 @@ class _DetailPageState extends State<DetailPage> {
         const SizedBox(height: 4),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: tags(detail?.types ?? []),
+          children: tags(),
         ),
         const SizedBox(height: 24),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            infoCell(name: 'Height', value: detail?.height.split(' (').first),
+            infoCell(
+                name: 'Height', value: widget.details.height.split(' (').first),
             Container(width: 1, height: 43, color: PokoColors.heather),
-            infoCell(name: 'Weight', value: detail?.weight.split(' (').first),
+            infoCell(
+                name: 'Weight', value: widget.details.weight.split(' (').first),
             Container(width: 1, height: 43, color: PokoColors.heather),
             infoCell(name: 'Species', value: 'Seed')
           ],
@@ -192,7 +196,7 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  Widget avatar(PokemonDetail? detail) {
+  Widget avatar() {
     return Container(
       width: 300,
       height: 300,
@@ -219,14 +223,14 @@ class _DetailPageState extends State<DetailPage> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(131),
               ),
-              child: Image.network('${detail?.sprite}'),
+              child: Image.network('${widget.details.sprite}'),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(6),
             child: CustomPaint(
               painter: ArcPainter(
-                  baseExperience: int.parse(detail?.training.baseExp ?? '0')),
+                  baseExperience: int.parse(widget.details.training.baseExp)),
               size: const Size(294, 294),
             ),
           )
@@ -235,7 +239,7 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  Widget infoPanel(PokemonDetail? detail) {
+  Widget infoPanel() {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -251,7 +255,7 @@ class _DetailPageState extends State<DetailPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                antropometrics(detail),
+                antropometrics(),
                 const SizedBox(height: 24),
                 tagSection(),
               ],
@@ -274,7 +278,7 @@ class _DetailPageState extends State<DetailPage> {
                 colors: [PokoColors.gradientFinish, PokoColors.gradientStart])),
         child: Center(
           child: Text(
-            context.detail.value?.training.baseExp ?? '',
+            widget.details.training.baseExp,
             style: const TextStyle(
               fontFamily: PokoFonts.jakartaSans,
               fontSize: 15,
@@ -288,10 +292,8 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    PokemonDetail? detail = context.detail.value;
-
     return FutureBuilder(
-      future: _paletteGenerator('${context.detail.value?.sprite}'),
+      future: _paletteGenerator('${widget.details.sprite}'),
       builder: (context, snapshot) {
         backgroundColor = snapshot.data?.colors.first ?? backgroundColor;
 
@@ -307,9 +309,9 @@ class _DetailPageState extends State<DetailPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         const SizedBox(height: 8),
-                        avatar(detail),
+                        avatar(),
                         const SizedBox(height: 16),
-                        infoPanel(detail),
+                        infoPanel(),
                       ],
                     ),
                     baseExperienceIndicator(),

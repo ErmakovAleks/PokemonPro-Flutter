@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '/src/constants/pokocolors.dart';
 import '/src/constants/pokofonts.dart';
 import '/src/constants/pokoimages.dart';
-import '/src/routes/routes.dart';
 
 class AboutUsPage extends StatelessWidget {
   const AboutUsPage({super.key});
@@ -21,7 +20,7 @@ class AboutUsPage extends StatelessWidget {
         leading: IconButton(
           icon: Image.asset(PokoImages.back),
           onPressed: () {
-            context.pageState.value = ActivePage.dashboard;
+            Navigator.of(context).pop();
           },
         ),
       ),

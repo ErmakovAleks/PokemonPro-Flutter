@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:pokemon_pro/src/routes/routes.dart';
+import 'package:pokemon_pro/src/routes/router.dart';
 import '../constants/pokocolors.dart';
 import '/src/constants/pokofonts.dart';
 import '../widgets/onboarding_panel.dart';
@@ -26,7 +25,7 @@ class PageThree extends StatelessWidget {
             children: [
               ElevatedButton(
                   onPressed: () {
-                    context.pageState.value = ActivePage.dashboard;
+                    Navigator.of(context).pushNamed(AppRouteKeys.dashboard);
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(

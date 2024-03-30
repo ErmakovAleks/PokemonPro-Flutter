@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pokemon_pro/src/routes/routes.dart';
+import 'package:pokemon_pro/src/routes/router.dart';
 import 'page_control.dart';
 import 'page_one.dart';
 import 'page_two.dart';
@@ -62,7 +62,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                   OnboardingButton(
                     title: 'Skip',
                     onPressed: () =>
-                        context.pageState.value = ActivePage.dashboard,
+                        Navigator.of(context).pushNamed(AppRouteKeys.dashboard),
                   ),
                   PageControl(
                       pagesCount: _pages.length,
@@ -73,7 +73,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                     onPressed: () {
                       _activePage += 1;
                       if (_activePage >= _pages.length) {
-                        context.pageState.value = ActivePage.dashboard;
+                        Navigator.of(context).pushNamed(AppRouteKeys.dashboard);
                       } else {
                         _pageController.animateToPage(
                           _activePage % _pages.length,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pokemon_pro/src/routes/router.dart';
 import 'package:pokemon_pro/src/widgets/poke_spinner.dart';
 import '../providers/source.dart';
-import '/src/routes/detail_state.dart';
 import '/src/widgets/dashboard_mosaic_tile.dart';
 import '/src/widgets/dashboard_list_tile.dart';
 import '/src/models/pokemon_list_model.dart';
@@ -10,7 +10,6 @@ import '/src/widgets/dashboard_search_bar.dart';
 import '/src/constants/pokofonts.dart';
 import '/src/constants/pokocolors.dart';
 import '/src/constants/pokoimages.dart';
-import '/src/routes/routes.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -36,15 +35,15 @@ class _DashboardPageState extends State<DashboardPage> {
               ? InkWell(
                   child: DashboardListTile(details: snapshot.data!),
                   onTap: () {
-                    context.detail.value = snapshot.data;
-                    context.pageState.value = ActivePage.detail;
+                    Navigator.of(context).pushNamed(AppRouteKeys.detail,
+                        arguments: snapshot.data);
                   },
                 )
               : InkWell(
                   child: DashboardMosaicTile(details: snapshot.data!),
                   onTap: () {
-                    context.detail.value = snapshot.data;
-                    context.pageState.value = ActivePage.detail;
+                    Navigator.of(context).pushNamed(AppRouteKeys.detail,
+                        arguments: snapshot.data);
                   },
                 );
         } else {
@@ -79,7 +78,7 @@ class _DashboardPageState extends State<DashboardPage> {
     return AppBar(
       backgroundColor: PokoColors.wildSand,
       leading: IconButton(
-        onPressed: () => context.pageState.value = ActivePage.aboutUs,
+        onPressed: () => Navigator.of(context).pushNamed(AppRouteKeys.aboutUs),
         icon: SizedBox(
           width: 24,
           height: 24,
