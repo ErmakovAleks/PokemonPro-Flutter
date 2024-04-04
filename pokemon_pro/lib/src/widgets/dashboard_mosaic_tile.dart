@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:flutter/material.dart';
-import '/src/constants/pokofonts.dart';
 import '/src/constants/pokocolors.dart';
 import '/src/widgets/dashboard_tag.dart';
 import '/src/models/pokemon_detail.dart';
@@ -33,7 +32,9 @@ class DashboardMosaicTile extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        color: Colors.white,
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors.white
+            : PokoColors.abbey,
         boxShadow: const [
           BoxShadow(
             color: Color.fromARGB(50, 127, 127, 127),
@@ -50,10 +51,7 @@ class DashboardMosaicTile extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: Text(
               '#${details.number.toString().padLeft(3, '0')}',
-              style: const TextStyle(
-                color: PokoColors.heather,
-                fontSize: 12,
-              ),
+              style: Theme.of(context).primaryTextTheme.headlineSmall,
             ),
           ),
           SizedBox(
@@ -87,11 +85,7 @@ class DashboardMosaicTile extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             details.name,
-            style: const TextStyle(
-              fontFamily: PokoFonts.paytoneOne,
-              fontSize: 19,
-              color: PokoColors.abbey,
-            ),
+            style: Theme.of(context).primaryTextTheme.displaySmall,
           ),
           const SizedBox(height: 12),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: tags()),

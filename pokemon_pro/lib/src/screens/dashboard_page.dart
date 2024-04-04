@@ -7,8 +7,6 @@ import '/src/widgets/dashboard_list_tile.dart';
 import '/src/models/pokemon_list_model.dart';
 import '/src/providers/dashboard_provider.dart';
 import '/src/widgets/dashboard_search_bar.dart';
-import '/src/constants/pokofonts.dart';
-import '/src/constants/pokocolors.dart';
 import '/src/constants/pokoimages.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -76,7 +74,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   PreferredSizeWidget appBar() {
     return AppBar(
-      backgroundColor: PokoColors.wildSand,
+      backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       leading: IconButton(
         onPressed: () => Navigator.of(context).pushNamed(AppRouteKeys.aboutUs),
         icon: SizedBox(
@@ -109,14 +107,11 @@ class _DashboardPageState extends State<DashboardPage> {
       preferredSize: const Size.fromHeight(52),
       child: Container(
         padding: const EdgeInsets.only(left: 30),
-        child: const Align(
+        child: Align(
           alignment: Alignment.centerLeft,
           child: Text(
             'All Pokemon',
-            style: TextStyle(
-                fontSize: 34,
-                fontFamily: PokoFonts.jakartaSans,
-                fontWeight: FontWeight.w900),
+            style: Theme.of(context).primaryTextTheme.bodyLarge,
           ),
         ),
       ),
@@ -128,7 +123,7 @@ class _DashboardPageState extends State<DashboardPage> {
       automaticallyImplyLeading: false,
       floating: true,
       snap: true,
-      backgroundColor: PokoColors.wildSand,
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       flexibleSpace: FlexibleSpaceBar(
         title: DashboardSearchBar(
           onUpdateSearch: (text) => onUpdateSearch(text),
@@ -178,14 +173,14 @@ class _DashboardPageState extends State<DashboardPage> {
         }
 
         return Container(
-          color: PokoColors.wildSand,
+          color: Theme.of(context).colorScheme.primaryContainer,
           child: CustomScrollView(
             slivers: [
               sliverAppBar(),
               SliverToBoxAdapter(
                 child: Container(
                   height: 8,
-                  color: PokoColors.wildSand,
+                  color: Theme.of(context).colorScheme.primaryContainer,
                 ),
               ),
               pokemonSliver

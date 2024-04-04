@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants/pokocolors.dart';
 import '../constants/pokoimages.dart';
-import '../constants/pokofonts.dart';
 
 class OnboardingPanel extends StatelessWidget {
   final String title;
@@ -12,7 +10,7 @@ class OnboardingPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: PokoColors.wildSand,
+      color: Theme.of(context).colorScheme.primaryContainer,
       child: Column(
         children: [
           const SizedBox(
@@ -34,18 +32,16 @@ class OnboardingPanel extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: const TextStyle(
-                    fontFamily: PokoFonts.paytoneOne, fontSize: 24.0),
+                style: Theme.of(context).primaryTextTheme.displayMedium,
               ),
               const SizedBox(
                 height: 24,
               ),
               Container(
-                margin: EdgeInsets.only(left: 24, right: 24.0),
-                child: const Text(
+                margin: const EdgeInsets.only(left: 24, right: 24.0),
+                child: Text(
                   '''Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.''',
-                  style: TextStyle(
-                      fontFamily: PokoFonts.jakartaSans, fontSize: 15.0),
+                  style: Theme.of(context).primaryTextTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
               ),

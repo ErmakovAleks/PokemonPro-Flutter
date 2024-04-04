@@ -45,19 +45,11 @@ class _DetailPageState extends State<DetailPage> {
         children: [
           Text(
             value ?? '',
-            style: const TextStyle(
-              fontFamily: PokoFonts.jakartaSans,
-              fontSize: 24,
-              color: Colors.black,
-            ),
+            style: Theme.of(context).primaryTextTheme.headlineMedium,
           ),
           Text(
             name,
-            style: const TextStyle(
-              fontFamily: PokoFonts.jakartaSans,
-              fontSize: 12,
-              color: PokoColors.heather,
-            ),
+            style: Theme.of(context).primaryTextTheme.headlineSmall,
           ),
         ],
       ),
@@ -99,11 +91,7 @@ class _DetailPageState extends State<DetailPage> {
       ),
       child: Text(
         name,
-        style: const TextStyle(
-          fontFamily: PokoFonts.jakartaSans,
-          fontSize: 15,
-          color: PokoColors.abbey,
-        ),
+        style: Theme.of(context).primaryTextTheme.bodyMedium,
       ),
     );
   }
@@ -112,17 +100,17 @@ class _DetailPageState extends State<DetailPage> {
     return AppBar(
       backgroundColor: backgroundColor,
       title: const Text('Base experience'),
-      titleTextStyle: const TextStyle(
-        fontSize: 19,
-        color: Colors.white,
-      ),
+      titleTextStyle: Theme.of(context).appBarTheme.titleTextStyle,
       leading: IconButton(
         onPressed: () =>
             Navigator.of(context).pushNamed(AppRouteKeys.dashboard),
         icon: SizedBox(
           width: 24,
           height: 24,
-          child: Image.asset(PokoImages.back, color: Colors.white),
+          child: Image.asset(
+            PokoImages.back,
+            color: Theme.of(context).iconTheme.color,
+          ),
         ),
       ),
       actions: [
@@ -130,12 +118,7 @@ class _DetailPageState extends State<DetailPage> {
           padding: const EdgeInsets.only(right: 16),
           child: Text(
             '#${widget.details.number.toString().padLeft(3, '0')}',
-            style: const TextStyle(
-              fontFamily: PokoFonts.jakartaSans,
-              fontWeight: FontWeight.bold,
-              fontSize: 24,
-              color: Colors.white,
-            ),
+            style: Theme.of(context).appBarTheme.titleTextStyle,
           ),
         ),
       ],
@@ -149,10 +132,7 @@ class _DetailPageState extends State<DetailPage> {
       children: [
         Text(
           widget.details.name,
-          style: const TextStyle(
-            fontFamily: PokoFonts.paytoneOne,
-            fontSize: 36,
-          ),
+          style: Theme.of(context).primaryTextTheme.displayLarge,
         ),
         const SizedBox(height: 4),
         Row(
@@ -243,10 +223,10 @@ class _DetailPageState extends State<DetailPage> {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(24), topRight: Radius.circular(24)),
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.primaryContainer,
         ),
         child: Align(
           alignment: Alignment.topCenter,

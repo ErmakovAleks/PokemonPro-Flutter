@@ -3,7 +3,6 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:pokemon_pro/src/widgets/poke_spinner.dart';
 import '/src/constants/pokocolors.dart';
-import '/src/constants/pokofonts.dart';
 import '/src/widgets/dashboard_tag.dart';
 import '/src/models/pokemon_detail.dart';
 
@@ -33,12 +32,14 @@ class DashboardListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-      color: PokoColors.wildSand,
+      color: Theme.of(context).colorScheme.primaryContainer,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: Colors.white,
+          color: Theme.of(context).brightness == Brightness.light
+              ? Colors.white
+              : PokoColors.abbey,
           boxShadow: const [
             BoxShadow(
               color: Color.fromARGB(50, 127, 127, 127),
@@ -88,21 +89,14 @@ class DashboardListTile extends StatelessWidget {
               children: [
                 Text(
                   details.name,
-                  style: const TextStyle(
-                    fontFamily: PokoFonts.paytoneOne,
-                    fontSize: 22,
-                    color: PokoColors.abbey,
-                  ),
+                  style: Theme.of(context).primaryTextTheme.displayMedium,
                 ),
                 SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(children: tags())),
                 Text(
                   '#${details.number.toString().padLeft(3, '0')}',
-                  style: const TextStyle(
-                    color: PokoColors.heather,
-                    fontSize: 12,
-                  ),
+                  style: Theme.of(context).primaryTextTheme.headlineSmall,
                 ),
               ],
             ),

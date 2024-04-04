@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pokemon_pro/src/constants/pokocolors.dart';
-import 'package:pokemon_pro/src/constants/pokofonts.dart';
 
 class DashboardSearchBar extends StatefulWidget {
   final void Function(String) onUpdateSearch;
@@ -29,7 +27,7 @@ class _DashboardSearchBarState extends State<DashboardSearchBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: PokoColors.wildSand,
+      color: Theme.of(context).colorScheme.primaryContainer,
       height: 40,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -38,28 +36,27 @@ class _DashboardSearchBarState extends State<DashboardSearchBar> {
             child: TextField(
               controller: _controller,
               textAlignVertical: TextAlignVertical.top,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Name of Pokemon...',
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: PokoColors.wildSand),
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(20.0)),
                 ),
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: PokoColors.gold),
-                    borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+                    borderRadius:
+                        const BorderRadius.all(Radius.circular(20.0))),
                 filled: true,
                 fillColor: Colors.white,
-                hintStyle: TextStyle(
-                    fontFamily: PokoFonts.jakartaSans,
-                    fontSize: 15,
-                    color: PokoColors.heather),
+                hintStyle: Theme.of(context).primaryTextTheme.labelSmall,
               ),
-              style: const TextStyle(
-                fontFamily: PokoFonts.jakartaSans,
-                fontSize: 18,
-              ),
+              style: Theme.of(context).primaryTextTheme.labelMedium,
             ),
           ),
           Visibility(
@@ -72,13 +69,9 @@ class _DashboardSearchBarState extends State<DashboardSearchBar> {
                   padding: const EdgeInsets.all(0),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   alignment: Alignment.centerRight),
-              child: const Text(
+              child: Text(
                 'Cancel',
-                style: TextStyle(
-                    color: PokoColors.heather,
-                    fontFamily: PokoFonts.jakartaSans,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15),
+                style: Theme.of(context).primaryTextTheme.labelSmall,
               ),
               onPressed: () {
                 _controller.text = '';
