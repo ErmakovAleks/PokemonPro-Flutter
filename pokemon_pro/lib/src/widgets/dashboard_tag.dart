@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokemon_pro/src/constants/pokofonts.dart';
-import 'package:pokemon_pro/src/models/pokemon_detail.dart';
+import 'package:pokemon_pro/src/models/pokemon_detail_model.dart';
 
 enum TagOption { full, short }
 

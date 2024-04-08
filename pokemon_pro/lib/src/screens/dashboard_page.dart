@@ -19,7 +19,7 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   bool _isList = true;
   String searchText = '';
-  final Source provider = DashboardProvider();
+  final Source provider = DashboardNetworkProvider();
   late final Future<List<PokemonModel>?> pokemonList;
 
   FutureBuilder pokemonTile(String name) {
@@ -44,6 +44,9 @@ class _DashboardPageState extends State<DashboardPage> {
                         arguments: snapshot.data);
                   },
                 );
+        } else if (snapshot.hasError) {
+          print('<!> error = ${snapshot.error.toString()}');
+          return const Icon(Icons.error);
         } else {
           return const Icon(Icons.error);
         }

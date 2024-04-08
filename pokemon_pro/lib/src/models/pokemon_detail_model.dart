@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '/src/constants/pokoimages.dart';
 import '/src/constants/pokocolors.dart';
 
-class PokemonDetail {
+class PokemonDetailModel {
   final int number;
   final String name;
   final List<PokeType> types;
@@ -12,7 +12,7 @@ class PokemonDetail {
   final Training training;
   final Uri sprite;
 
-  const PokemonDetail._({
+  const PokemonDetailModel._({
     required this.number,
     required this.name,
     required this.types,
@@ -23,8 +23,8 @@ class PokemonDetail {
     required this.sprite,
   });
 
-  factory PokemonDetail.fromJson(Map<String, dynamic> json) {
-    return PokemonDetail._(
+  factory PokemonDetailModel.fromJson(Map<String, dynamic> json) {
+    return PokemonDetailModel._(
       number: json['number'],
       name: json['name'],
       types: List<PokeType>.from(

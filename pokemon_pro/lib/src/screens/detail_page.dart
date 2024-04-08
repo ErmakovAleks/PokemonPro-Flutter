@@ -1,6 +1,6 @@
 import 'package:palette_generator/palette_generator.dart';
 import 'package:flutter/material.dart';
-import '../models/pokemon_detail.dart';
+import '../models/pokemon_detail_model.dart';
 import '../widgets/dashboard_tag.dart';
 import '/src/constants/pokocolors.dart';
 import '/src/constants/pokofonts.dart';
@@ -9,7 +9,7 @@ import '/src/constants/pokoimages.dart';
 import '../routes/router.dart';
 
 class DetailPage extends StatefulWidget {
-  final PokemonDetail details;
+  final PokemonDetailModel details;
 
   const DetailPage({required this.details, super.key});
 

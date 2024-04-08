@@ -6,7 +6,7 @@ import '../screens/about_us_page.dart';
 import '../screens/dashboard_page.dart';
 import '../screens/detail_page.dart';
 import '../screens/onboarding_page.dart';
-import '../models/pokemon_detail.dart';
+import '../models/pokemon_detail_model.dart';
 
 abstract class AppRouteKeys {
   static const String onboarding = 'onboarding';
@@ -37,7 +37,7 @@ Route<dynamic>? AppRouter(RouteSettings settings) {
       return nativePageRoute(
         settings: settings,
         builder: (context) =>
-            DetailPage(details: settings.arguments as PokemonDetail),
+            DetailPage(details: settings.arguments as PokemonDetailModel),
       );
   }
 }

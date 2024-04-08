@@ -1,38 +1,53 @@
-import 'dart:convert';
 import 'package:http/http.dart' show Client;
-import '../models/pokemon_detail.dart';
+import 'package:async/async.dart';
+import 'package:pokemon_pro/src/models/pokemon_detail_containable.dart';
+import '../models/pokemon_list_containable.dart';
+import '../services/network_service/network_service.dart';
+import '../models/pokemon_detail_model.dart';
 import '../models/pokemon_list_model.dart';
 import '../providers/source.dart';
 
 const _root1 = 'https://pokeapi.co';
 const _root2 = 'https://ex.traction.one';
 
-class DashboardProvider implements Source {
+class DashboardNetworkProvider implements Source {
   final Client client = Client();
+  final NetworkService _networkService = NetworkService();
 
   @override
   Future<List<PokemonModel>?> pokemonList(
       {int limit = 20, int offset = 0}) async {
-    Map<String, String> params = {'limit': '$limit', 'offset': '$offset'};
-    final response = await client.get(
-        Uri.parse('$_root1/api/v2/pokemon/').replace(queryParameters: params));
-    final parsedJson = json.decode(response.body);
-    final model = PokemonListModel.fromJson(parsedJson);
+    Result<PokemonListModel> response = await _networkService
+        .sendRequest(PokemonListContainable(limit: limit, offset: offset));
 
-    params['limit'] = '${model.count}';
-    final fullResponse = await client.get(
-        Uri.parse('$_root1/api/v2/pokemon/').replace(queryParameters: params));
-    final parsedFullJson = json.decode(fullResponse.body);
-    final fullModel = PokemonListModel.fromJson(parsedFullJson);
+    if (response.isValue) {
+      Result<PokemonListModel> fullResponse = await _networkService.sendRequest(
+        PokemonListContainable(
+            limit: response.asValue?.value.count ?? 0, offset: offset),
+      );
 
-    return fullModel.results;
+      if (fullResponse.isValue) {
+        return fullResponse.asValue?.value.results;
+      } else {
+        print(response.asError?.error.toString());
+        return null;
+      }
+    } else {
+      print(response.asError?.error.toString());
+      return null;
+    }
   }
 
-  Future<PokemonDetail> detail(String name) async {
-    final response =
-        await client.get(Uri.parse('$_root2/pokedex/pokemon/$name'));
-    final parsedJson = json.decode(response.body);
+  @override
+  Future<PokemonDetailModel?> detail(String name) async {
+    Result<PokemonDetailModel> response =
+        await _networkService.sendRequest(PokemonDetailContainable(name));
 
-    return PokemonDetail.fromJson(parsedJson[0]);
+    if (response.asValue != null) {
+      return response.asValue?.value;
+    } else {
+      print(response.asError?.error.toString());
+      return null;
+    }
   }
 }

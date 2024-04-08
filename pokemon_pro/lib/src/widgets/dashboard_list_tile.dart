@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:pokemon_pro/src/widgets/poke_spinner.dart';
 import '/src/constants/pokocolors.dart';
 import '/src/widgets/dashboard_tag.dart';
-import '/src/models/pokemon_detail.dart';
+import '../models/pokemon_detail_model.dart';
 
 class DashboardListTile extends StatelessWidget {
-  final PokemonDetail details;
+  final PokemonDetailModel details;
 
   const DashboardListTile({required this.details, super.key});
 
