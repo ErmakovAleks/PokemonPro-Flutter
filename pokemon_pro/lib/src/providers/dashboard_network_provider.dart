@@ -1,17 +1,12 @@
-import 'package:http/http.dart' show Client;
 import 'package:async/async.dart';
-import 'package:pokemon_pro/src/models/pokemon_detail_containable.dart';
+import '../models/pokemon_detail_containable.dart';
 import '../models/pokemon_list_containable.dart';
 import '../services/network_service/network_service.dart';
 import '../models/pokemon_detail_model.dart';
 import '../models/pokemon_list_model.dart';
 import '../providers/source.dart';
 
-const _root1 = 'https://pokeapi.co';
-const _root2 = 'https://ex.traction.one';
-
 class DashboardNetworkProvider implements Source {
-  final Client client = Client();
   final NetworkService _networkService = NetworkService();
 
   @override

@@ -33,52 +33,59 @@ class _DashboardSearchBarState extends State<DashboardSearchBar> {
       child: Row(
         children: [
           Expanded(
-            child: TextField(
-              controller: _controller,
-              textAlignVertical: TextAlignVertical.top,
-              decoration: InputDecoration(
-                labelText: 'Name of Pokemon...',
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                  ),
-                  borderRadius: const BorderRadius.all(Radius.circular(20.0)),
-                ),
-                prefixIcon: const Icon(Icons.search),
-                focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    ),
-                    borderRadius:
-                        const BorderRadius.all(Radius.circular(20.0))),
-                filled: true,
-                fillColor: Colors.white,
-                hintStyle: Theme.of(context).primaryTextTheme.labelSmall,
-              ),
-              style: Theme.of(context).primaryTextTheme.labelMedium,
-            ),
+            child: _textField(context),
           ),
-          Visibility(
-            maintainSize: false,
-            maintainAnimation: true,
-            maintainState: true,
-            visible: _isCancelVisible,
-            child: TextButton(
-              style: TextButton.styleFrom(
-                  padding: const EdgeInsets.all(0),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  alignment: Alignment.centerRight),
-              child: Text(
-                'Cancel',
-                style: Theme.of(context).primaryTextTheme.labelSmall,
-              ),
-              onPressed: () {
-                _controller.text = '';
-              },
-            ),
-          ),
+          _cancelButton(),
         ],
+      ),
+    );
+  }
+
+  Widget _textField(BuildContext context) {
+    return TextField(
+      controller: _controller,
+      textAlignVertical: TextAlignVertical.top,
+      decoration: InputDecoration(
+        labelText: 'Name of Pokemon...',
+        floatingLabelBehavior: FloatingLabelBehavior.never,
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.primaryContainer,
+          ),
+          borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+        ),
+        prefixIcon: const Icon(Icons.search),
+        focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+            ),
+            borderRadius: const BorderRadius.all(Radius.circular(20.0))),
+        filled: true,
+        fillColor: Colors.white,
+        hintStyle: Theme.of(context).primaryTextTheme.labelSmall,
+      ),
+      style: Theme.of(context).primaryTextTheme.labelMedium,
+    );
+  }
+
+  Widget _cancelButton() {
+    return Visibility(
+      maintainSize: false,
+      maintainAnimation: true,
+      maintainState: true,
+      visible: _isCancelVisible,
+      child: TextButton(
+        style: TextButton.styleFrom(
+            padding: const EdgeInsets.all(0),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            alignment: Alignment.centerRight),
+        child: Text(
+          'Cancel',
+          style: Theme.of(context).primaryTextTheme.labelSmall,
+        ),
+        onPressed: () {
+          _controller.text = '';
+        },
       ),
     );
   }

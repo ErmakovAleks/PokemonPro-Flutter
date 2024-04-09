@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:pokemon_pro/src/routes/router.dart';
-import 'package:pokemon_pro/src/widgets/poke_spinner.dart';
+import '../routes/router.dart';
+import '../widgets/poke_spinner.dart';
 import '../providers/source.dart';
-import '/src/widgets/dashboard_mosaic_tile.dart';
-import '/src/widgets/dashboard_list_tile.dart';
-import '/src/models/pokemon_list_model.dart';
-import '/src/providers/dashboard_provider.dart';
-import '/src/widgets/dashboard_search_bar.dart';
-import '/src/constants/pokoimages.dart';
+import '../widgets/dashboard_mosaic_tile.dart';
+import '../widgets/dashboard_list_tile.dart';
+import '../models/pokemon_list_model.dart';
+import '../providers/dashboard_network_provider.dart';
+import '../widgets/dashboard_search_bar.dart';
+import '../constants/pokoimages.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -18,34 +18,44 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   bool _isList = true;
-  String searchText = '';
-  final Source provider = DashboardNetworkProvider();
-  late final Future<List<PokemonModel>?> pokemonList;
+  String _searchText = '';
+  final Source _provider = DashboardNetworkProvider();
+  late final Future<List<PokemonModel>?> _pokemonList;
 
-  FutureBuilder pokemonTile(String name) {
+  void _onUpdateSearch(String text) {
+    setState(() {
+      _searchText = text;
+    });
+  }
+
+  @override
+  void initState() {
+    _pokemonList = _provider.pokemonList();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: _appBar(),
+      body: _body(
+        pokemonList: _pokemonList,
+        provider: _provider,
+        context: context,
+      ),
+    );
+  }
+
+  FutureBuilder _pokemonTile(String name) {
     return FutureBuilder(
-      future: provider.detail(name),
+      future: _provider.detail(name),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: PokeSpinner());
         } else if (snapshot.hasData) {
-          return _isList
-              ? InkWell(
-                  child: DashboardListTile(details: snapshot.data!),
-                  onTap: () {
-                    Navigator.of(context).pushNamed(AppRouteKeys.detail,
-                        arguments: snapshot.data);
-                  },
-                )
-              : InkWell(
-                  child: DashboardMosaicTile(details: snapshot.data!),
-                  onTap: () {
-                    Navigator.of(context).pushNamed(AppRouteKeys.detail,
-                        arguments: snapshot.data);
-                  },
-                );
+          return _isList ? _listTile(snapshot) : _mosaicTile(snapshot);
         } else if (snapshot.hasError) {
-          print('<!> error = ${snapshot.error.toString()}');
+          print('<!> Error = ${snapshot.error.toString()}');
           return const Icon(Icons.error);
         } else {
           return const Icon(Icons.error);
@@ -54,58 +64,72 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  void onUpdateSearch(String text) {
-    setState(() {
-      searchText = text;
-    });
-  }
-
-  @override
-  void initState() {
-    pokemonList = provider.pokemonList();
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBar(),
-      body:
-          body(pokemonList: pokemonList, provider: provider, context: context),
+  Widget _listTile(AsyncSnapshot<dynamic> snapshot) {
+    return InkWell(
+      child: DashboardListTile(
+        details: snapshot.data!,
+      ),
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          AppRouteKeys.detail,
+          arguments: snapshot.data,
+        );
+      },
     );
   }
 
-  PreferredSizeWidget appBar() {
+  Widget _mosaicTile(AsyncSnapshot<dynamic> snapshot) {
+    return InkWell(
+      child: DashboardMosaicTile(
+        details: snapshot.data!,
+      ),
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          AppRouteKeys.detail,
+          arguments: snapshot.data,
+        );
+      },
+    );
+  }
+
+  PreferredSizeWidget _appBar() {
     return AppBar(
       backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-      leading: IconButton(
-        onPressed: () => Navigator.of(context).pushNamed(AppRouteKeys.aboutUs),
-        icon: SizedBox(
-          width: 24,
-          height: 24,
-          child: Image.asset(PokoImages.logo),
-        ),
-      ),
+      leading: _leftButton(context),
       actions: [
-        IconButton(
-            onPressed: () {
-              setState(() {
-                _isList = !_isList;
-              });
-            },
-            icon: SizedBox(
-              width: 24,
-              height: 24,
-              child: _isList
-                  ? Image.asset(PokoImages.collectionRepresentIcon)
-                  : Image.asset(PokoImages.tableRepresentIcon),
-            )),
+        _rightButton(context),
       ],
-      bottom: title(),
+      bottom: _title(),
     );
   }
 
-  PreferredSize title() {
+  Widget _leftButton(BuildContext context) {
+    return IconButton(
+      onPressed: () => Navigator.of(context).pushNamed(AppRouteKeys.aboutUs),
+      icon: SizedBox(
+        width: 24,
+        height: 24,
+        child: Image.asset(PokoImages.logo),
+      ),
+    );
+  }
+
+  Widget _rightButton(BuildContext context) {
+    return IconButton(
+      onPressed: () => setState(() {
+        _isList = !_isList;
+      }),
+      icon: SizedBox(
+        width: 24,
+        height: 24,
+        child: _isList
+            ? Image.asset(PokoImages.collectionRepresentIcon)
+            : Image.asset(PokoImages.tableRepresentIcon),
+      ),
+    );
+  }
+
+  PreferredSize _title() {
     return PreferredSize(
       preferredSize: const Size.fromHeight(52),
       child: Container(
@@ -121,7 +145,7 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget sliverAppBar() {
+  Widget _sliverAppBar() {
     return SliverAppBar(
       automaticallyImplyLeading: false,
       floating: true,
@@ -129,68 +153,86 @@ class _DashboardPageState extends State<DashboardPage> {
       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       flexibleSpace: FlexibleSpaceBar(
         title: DashboardSearchBar(
-          onUpdateSearch: (text) => onUpdateSearch(text),
+          onUpdateSearch: (text) => _onUpdateSearch(text),
         ),
         titlePadding: EdgeInsets.zero,
       ),
     );
   }
 
-  Widget body(
+  Widget _body(
       {required Future<List<PokemonModel>?> pokemonList,
       required Source provider,
       required BuildContext context}) {
     return FutureBuilder(
       future: pokemonList,
       builder: (context, snapshot) {
-        Widget pokemonSliver;
-        if (snapshot.connectionState == ConnectionState.waiting ||
-            snapshot.hasData) {
-          List<PokemonModel>? filtered = snapshot.data
-              ?.where((element) => element.name.contains(searchText))
-              .toList();
-          if (_isList) {
-            pokemonSliver = SliverFixedExtentList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-                return pokemonTile(filtered?[index].name ?? '');
-              }),
-              itemExtent: 143,
-            );
-          } else {
-            pokemonSliver = SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              sliver: SliverGrid(
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  return pokemonTile(filtered?[index].name ?? '');
-                }),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 9,
-                    mainAxisSpacing: 9,
-                    mainAxisExtent: 199),
-              ),
-            );
-          }
-        } else {
-          pokemonSliver = const SliverToBoxAdapter(child: Icon(Icons.error));
-        }
-
         return Container(
           color: Theme.of(context).colorScheme.primaryContainer,
           child: CustomScrollView(
             slivers: [
-              sliverAppBar(),
+              _sliverAppBar(),
               SliverToBoxAdapter(
                 child: Container(
                   height: 8,
                   color: Theme.of(context).colorScheme.primaryContainer,
                 ),
               ),
-              pokemonSliver
+              _pokemonSliver(snapshot),
             ],
           ),
         );
       },
+    );
+  }
+
+  Widget _pokemonSliver(AsyncSnapshot<List<PokemonModel>?> snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting ||
+        snapshot.hasData) {
+      List<PokemonModel>? filtered = snapshot.data
+          ?.where((element) => element.name.contains(_searchText))
+          .toList();
+      if (_isList) {
+        return _sliverListLayout(filtered);
+      } else {
+        return _sliverGridLayout(filtered);
+      }
+    } else {
+      return const SliverToBoxAdapter(child: Icon(Icons.error));
+    }
+  }
+
+  Widget _sliverListLayout(List<PokemonModel>? filtered) {
+    return SliverFixedExtentList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return _pokemonTile(filtered?[index].name ?? '');
+        },
+      ),
+      itemExtent: 143,
+    );
+  }
+
+  Widget _sliverGridLayout(List<PokemonModel>? filtered) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+      ),
+      sliver: SliverGrid(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            return _pokemonTile(
+              filtered?[index].name ?? '',
+            );
+          },
+        ),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 9,
+          mainAxisSpacing: 9,
+          mainAxisExtent: 199,
+        ),
+      ),
     );
   }
 }

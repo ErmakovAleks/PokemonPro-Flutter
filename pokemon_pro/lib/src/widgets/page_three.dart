@@ -23,31 +23,36 @@ class PageThree extends StatelessWidget {
           bottom: 0,
           child: Column(
             children: [
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(AppRouteKeys.dashboard);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(32.5)),
-                    backgroundColor: PokoColors.gold,
-                    shadowColor: PokoColors.darkGold,
-                    elevation: 8,
-                    fixedSize: const Size(200, 65),
-                  ),
-                  child: const Text(
-                    'GO!',
-                    style: TextStyle(
-                      fontFamily: PokoFonts.jakartaSans,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  )),
+              _goButton(context),
               const SizedBox(height: 86),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _goButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.of(context).pushNamed(AppRouteKeys.dashboard);
+      },
+      style: ElevatedButton.styleFrom(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(32.5)),
+        backgroundColor: PokoColors.gold,
+        shadowColor: PokoColors.darkGold,
+        elevation: 8,
+        fixedSize: const Size(200, 65),
+      ),
+      child: const Text(
+        'GO!',
+        style: TextStyle(
+          fontFamily: PokoFonts.jakartaSans,
+          fontSize: 20,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
     );
   }
 }

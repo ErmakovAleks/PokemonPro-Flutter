@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '/src/constants/pokoimages.dart';
-import '/src/constants/pokocolors.dart';
+import '../constants/pokoimages.dart';
+import '../constants/pokocolors.dart';
 
 class PokemonDetailModel {
   final int number;

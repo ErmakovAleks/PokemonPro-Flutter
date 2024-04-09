@@ -52,7 +52,7 @@ class NetworkService implements NetworkSessionProcessable {
         final parsedJson = json.decode(response.body);
         try {
           return Result.value(requestModel.fromJson(parsedJson));
-        } catch (error) {
+        } on TypeError {
           return Result.value(requestModel.fromJson(parsedJson[0]));
         }
       } else {
@@ -65,6 +65,3 @@ class NetworkService implements NetworkSessionProcessable {
     }
   }
 }
-
-// List<PokemonDetail> pokemonDetailFromJson(String str) => List<PokemonDetail>.from(json.decode(str).map((x) => PokemonDetail.fromJson(x)));
-// PokemonDetail pokemonDetailFromJson(String str) => PokemonDetail.fromJson(json.decode(str));

@@ -38,18 +38,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return Scaffold(
         body: Stack(
       children: [
-        PageView.builder(
-          controller: _pageController,
-          onPageChanged: (index) {
-            setState(() {
-              _activePage = index;
-            });
-          },
-          itemCount: _pages.length,
-          itemBuilder: (BuildContext context, int index) {
-            return _pages[index % _pages.length];
-          },
-        ),
+        _pageViewBuilder(),
         Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -58,32 +47,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               height: 30,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  OnboardingButton(
-                    title: 'Skip',
-                    onPressed: () =>
-                        Navigator.of(context).pushNamed(AppRouteKeys.dashboard),
-                  ),
-                  PageControl(
-                      pagesCount: _pages.length,
-                      activePage: _activePage,
-                      onUpdatePage: _updatePage),
-                  OnboardingButton(
-                    title: 'Next',
-                    onPressed: () {
-                      _activePage += 1;
-                      if (_activePage >= _pages.length) {
-                        Navigator.of(context).pushNamed(AppRouteKeys.dashboard);
-                      } else {
-                        _pageController.animateToPage(
-                          _activePage % _pages.length,
-                          duration: const Duration(milliseconds: 200),
-                          curve: Curves.easeIn,
-                        );
-                      }
-                    },
-                  )
-                ],
+                children: _controlPanel(),
               ),
             ),
             const SizedBox(
@@ -93,5 +57,49 @@ class _OnboardingPageState extends State<OnboardingPage> {
         ),
       ],
     ));
+  }
+
+  Widget _pageViewBuilder() {
+    return PageView.builder(
+      controller: _pageController,
+      onPageChanged: (index) {
+        setState(() {
+          _activePage = index;
+        });
+      },
+      itemCount: _pages.length,
+      itemBuilder: (BuildContext context, int index) {
+        return _pages[index % _pages.length];
+      },
+    );
+  }
+
+  List<Widget> _controlPanel() {
+    return [
+      OnboardingButton(
+        title: 'Skip',
+        onPressed: () =>
+            Navigator.of(context).pushNamed(AppRouteKeys.dashboard),
+      ),
+      PageControl(
+          pagesCount: _pages.length,
+          activePage: _activePage,
+          onUpdatePage: _updatePage),
+      OnboardingButton(
+        title: 'Next',
+        onPressed: () {
+          _activePage += 1;
+          if (_activePage >= _pages.length) {
+            Navigator.of(context).pushNamed(AppRouteKeys.dashboard);
+          } else {
+            _pageController.animateToPage(
+              _activePage % _pages.length,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeIn,
+            );
+          }
+        },
+      )
+    ];
   }
 }

@@ -16,42 +16,50 @@ class OnboardingPanel extends StatelessWidget {
           const SizedBox(
             height: 118,
           ),
-          SizedBox(
-            height: 328,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Image.asset(PokoImages.bg),
-                Image.asset(imageName),
-              ],
-            ),
-          ),
+          _images(),
           const Spacer(),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                title,
-                style: Theme.of(context).primaryTextTheme.displayMedium,
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              Container(
-                margin: const EdgeInsets.only(left: 24, right: 24.0),
-                child: Text(
-                  '''Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.''',
-                  style: Theme.of(context).primaryTextTheme.bodyMedium,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(
-                height: 176,
-              ),
-            ],
-          ),
+          _description(context),
         ],
       ),
+    );
+  }
+
+  Widget _images() {
+    return SizedBox(
+      height: 328,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Image.asset(PokoImages.bg),
+          Image.asset(imageName),
+        ],
+      ),
+    );
+  }
+
+  Widget _description(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Text(
+          title,
+          style: Theme.of(context).primaryTextTheme.displayMedium,
+        ),
+        const SizedBox(
+          height: 24,
+        ),
+        Container(
+          margin: const EdgeInsets.only(left: 24, right: 24.0),
+          child: Text(
+            '''Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.''',
+            style: Theme.of(context).primaryTextTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        const SizedBox(
+          height: 176,
+        ),
+      ],
     );
   }
 }

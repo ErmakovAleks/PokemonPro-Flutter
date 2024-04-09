@@ -18,7 +18,7 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
-  Color backgroundColor = Colors.white;
+  Color _backgroundColor = Colors.white;
 
   Future<PaletteGenerator> _paletteGenerator(String sprite) async {
     PaletteGenerator paletteGenerator =
@@ -28,7 +28,22 @@ class _DetailPageState extends State<DetailPage> {
     return paletteGenerator;
   }
 
-  List<Widget> tags() {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _paletteGenerator('${widget.details.sprite}'),
+      builder: (context, snapshot) {
+        _backgroundColor = snapshot.data?.colors.first ?? _backgroundColor;
+
+        return Scaffold(
+          appBar: _appBar(),
+          body: _body(),
+        );
+      },
+    );
+  }
+
+  List<Widget> _tags() {
     List<Widget> tags = [];
     for (var type in widget.details.types) {
       tags.add(DashboardTag(type: type, option: TagOption.full));
@@ -37,7 +52,7 @@ class _DetailPageState extends State<DetailPage> {
     return tags;
   }
 
-  Widget infoCell({required String name, required String? value}) {
+  Widget _infoCell({required String name, required String? value}) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 11.5),
       child: Column(
@@ -56,10 +71,11 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  Widget hashTagBlock({required String title, required List<String> hashTags}) {
+  Widget _hashTagBlock(
+      {required String title, required List<String> hashTags}) {
     List<Widget> hashTagsList = [];
     for (var tag in hashTags) {
-      hashTagsList.add(hashTag(tag));
+      hashTagsList.add(_hashTag(tag));
     }
 
     return Column(
@@ -80,7 +96,7 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  Widget hashTag(String name) {
+  Widget _hashTag(String name) {
     return Container(
       margin: const EdgeInsets.fromLTRB(0, 0, 8, 8),
       padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
@@ -96,36 +112,65 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  PreferredSizeWidget appBar() {
+  PreferredSizeWidget _appBar() {
     return AppBar(
-      backgroundColor: backgroundColor,
+      backgroundColor: _backgroundColor,
       title: const Text('Base experience'),
       titleTextStyle: Theme.of(context).appBarTheme.titleTextStyle,
-      leading: IconButton(
-        onPressed: () =>
-            Navigator.of(context).pushNamed(AppRouteKeys.dashboard),
-        icon: SizedBox(
-          width: 24,
-          height: 24,
-          child: Image.asset(
-            PokoImages.back,
-            color: Theme.of(context).iconTheme.color,
-          ),
-        ),
-      ),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 16),
-          child: Text(
-            '#${widget.details.number.toString().padLeft(3, '0')}',
-            style: Theme.of(context).appBarTheme.titleTextStyle,
-          ),
-        ),
-      ],
+      leading: _leftButton(),
+      actions: [_rightButton()],
     );
   }
 
-  Widget antropometrics() {
+  Widget _leftButton() {
+    return IconButton(
+      onPressed: () => Navigator.of(context).pushNamed(AppRouteKeys.dashboard),
+      icon: SizedBox(
+        width: 24,
+        height: 24,
+        child: Image.asset(
+          PokoImages.back,
+          color: Theme.of(context).iconTheme.color,
+        ),
+      ),
+    );
+  }
+
+  Widget _rightButton() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 16),
+      child: Text(
+        '#${widget.details.number.toString().padLeft(3, '0')}',
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      ),
+    );
+  }
+
+  Widget _body() {
+    return Center(
+      child: Container(
+        color: _backgroundColor,
+        child: SizedBox(
+          child: Stack(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 8),
+                  _avatar(),
+                  const SizedBox(height: 16),
+                  _infoPanel(),
+                ],
+              ),
+              _baseExperienceIndicator(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _antropometrics() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -137,34 +182,53 @@ class _DetailPageState extends State<DetailPage> {
         const SizedBox(height: 4),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: tags(),
+          children: _tags(),
         ),
         const SizedBox(height: 24),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            infoCell(
-                name: 'Height', value: widget.details.height.split(' (').first),
-            Container(width: 1, height: 43, color: PokoColors.heather),
-            infoCell(
-                name: 'Weight', value: widget.details.weight.split(' (').first),
-            Container(width: 1, height: 43, color: PokoColors.heather),
-            infoCell(name: 'Species', value: 'Seed')
-          ],
+          children: _infoCells(),
         ),
       ],
     );
   }
 
-  Widget tagSection() {
+  List<Widget> _infoCells() {
+    return [
+      _infoCell(
+        name: 'Height',
+        value: widget.details.height.split(' (').first,
+      ),
+      Container(
+        width: 1,
+        height: 43,
+        color: PokoColors.heather,
+      ),
+      _infoCell(
+        name: 'Weight',
+        value: widget.details.weight.split(' (').first,
+      ),
+      Container(
+        width: 1,
+        height: 43,
+        color: PokoColors.heather,
+      ),
+      _infoCell(
+        name: 'Species',
+        value: 'Seed',
+      ),
+    ];
+  }
+
+  Widget _tagSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        hashTagBlock(
+        _hashTagBlock(
             title: 'Abilities',
             hashTags: ['Keen-eye', 'Tangle-feet', 'Big-pecks']),
-        hashTagBlock(title: 'Moves', hashTags: [
+        _hashTagBlock(title: 'Moves', hashTags: [
           'Razor-wind',
           'Gust',
           'Fly',
@@ -176,7 +240,7 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  Widget avatar() {
+  Widget _avatar() {
     return Container(
       width: 300,
       height: 300,
@@ -185,41 +249,53 @@ class _DetailPageState extends State<DetailPage> {
           borderRadius: BorderRadius.circular(150)),
       child: Stack(
         children: [
-          Center(
-            child: Container(
-              height: 276,
-              width: 276,
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                borderRadius: BorderRadius.circular(138),
-              ),
-            ),
-          ),
-          Center(
-            child: Container(
-              height: 262,
-              width: 262,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(131),
-              ),
-              child: Image.network('${widget.details.sprite}'),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(6),
-            child: CustomPaint(
-              painter: ArcPainter(
-                  baseExperience: int.parse(widget.details.training.baseExp)),
-              size: const Size(294, 294),
-            ),
-          )
+          _coloredBackground(),
+          _roundedImage(),
+          _experienceArcIndicator(),
         ],
       ),
     );
   }
 
-  Widget infoPanel() {
+  Widget _coloredBackground() {
+    return Center(
+      child: Container(
+        height: 276,
+        width: 276,
+        decoration: BoxDecoration(
+          color: _backgroundColor,
+          borderRadius: BorderRadius.circular(138),
+        ),
+      ),
+    );
+  }
+
+  Widget _roundedImage() {
+    return Center(
+      child: Container(
+        height: 262,
+        width: 262,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(131),
+        ),
+        child: Image.network('${widget.details.sprite}'),
+      ),
+    );
+  }
+
+  Widget _experienceArcIndicator() {
+    return Padding(
+      padding: const EdgeInsets.all(6),
+      child: CustomPaint(
+        painter: ArcPainter(
+            baseExperience: int.parse(widget.details.training.baseExp)),
+        size: const Size(294, 294),
+      ),
+    );
+  }
+
+  Widget _infoPanel() {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -235,9 +311,9 @@ class _DetailPageState extends State<DetailPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                antropometrics(),
+                _antropometrics(),
                 const SizedBox(height: 24),
-                tagSection(),
+                _tagSection(),
               ],
             ),
           ),
@@ -246,7 +322,7 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  Widget baseExperienceIndicator() {
+  Widget _baseExperienceIndicator() {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
@@ -267,41 +343,6 @@ class _DetailPageState extends State<DetailPage> {
           ),
         ),
       ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _paletteGenerator('${widget.details.sprite}'),
-      builder: (context, snapshot) {
-        backgroundColor = snapshot.data?.colors.first ?? backgroundColor;
-
-        return Scaffold(
-          appBar: appBar(),
-          body: Center(
-            child: Container(
-              color: backgroundColor,
-              child: SizedBox(
-                child: Stack(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 8),
-                        avatar(),
-                        const SizedBox(height: 16),
-                        infoPanel(),
-                      ],
-                    ),
-                    baseExperienceIndicator(),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }

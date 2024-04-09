@@ -23,22 +23,24 @@ class DashboardTag extends StatelessWidget {
             borderRadius: BorderRadius.circular(isFull ? 11.5 : 10.0),
             color: type.tagColor,
           ),
-          child: isFull
-              ? Row(
-                  children: [
-                    type.tagImage,
-                    SizedBox(width: 4),
-                    Text(
-                      type.type,
-                      style: TextStyle(
-                        fontFamily: PokoFonts.jakartaSans,
-                        fontSize: 15,
-                        color: type.tagFont,
-                      ),
-                    ),
-                  ],
-                )
-              : type.tagImage),
+          child: isFull ? _fullTag() : type.tagImage),
+    );
+  }
+
+  Widget _fullTag() {
+    return Row(
+      children: [
+        type.tagImage,
+        const SizedBox(width: 4),
+        Text(
+          type.type,
+          style: TextStyle(
+            fontFamily: PokoFonts.jakartaSans,
+            fontSize: 15,
+            color: type.tagFont,
+          ),
+        ),
+      ],
     );
   }
 }

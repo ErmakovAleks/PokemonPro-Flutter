@@ -23,21 +23,25 @@ class PageControl extends StatelessWidget {
             onTap: () {
               onUpdatePage(index);
             },
-            child: Container(
-              width: 12,
-              decoration: BoxDecoration(
-                color: activePage == index
-                    ? Theme.of(context).colorScheme.secondaryContainer
-                    : Theme.of(context).colorScheme.tertiaryContainer,
-                border: Border.all(
-                  width: 1,
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                ),
-                shape: BoxShape.circle,
-              ),
-            ),
+            child: _dot(context, index),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _dot(BuildContext context, int index) {
+    return Container(
+      width: 12,
+      decoration: BoxDecoration(
+        color: activePage == index
+            ? Theme.of(context).colorScheme.secondaryContainer
+            : Theme.of(context).colorScheme.tertiaryContainer,
+        border: Border.all(
+          width: 1,
+          color: Theme.of(context).colorScheme.secondaryContainer,
+        ),
+        shape: BoxShape.circle,
       ),
     );
   }
