@@ -7,7 +7,7 @@ import '../models/pokemon_list_model.dart';
 import '../providers/source.dart';
 
 class DashboardNetworkProvider implements Source {
-  final NetworkService _networkService = NetworkService();
+  final NetworkService _networkService = NetworkService.shared();
 
   @override
   Future<List<PokemonModel>?> pokemonList(
