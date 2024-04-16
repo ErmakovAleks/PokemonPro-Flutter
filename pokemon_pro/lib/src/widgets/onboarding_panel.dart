@@ -4,13 +4,17 @@ import '../constants/pokoimages.dart';
 class OnboardingPanel extends StatelessWidget {
   final String title;
   final String imageName;
-  const OnboardingPanel(
-      {required this.title, required this.imageName, super.key});
+  const OnboardingPanel({
+    required this.title,
+    required this.imageName,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
+    ThemeData styles = Theme.of(context);
     return Container(
-      color: Theme.of(context).colorScheme.primaryContainer,
+      color: styles.colorScheme.primaryContainer,
       child: Column(
         children: [
           const SizedBox(
@@ -38,12 +42,13 @@ class OnboardingPanel extends StatelessWidget {
   }
 
   Widget _description(BuildContext context) {
+    ThemeData styles = Theme.of(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Text(
           title,
-          style: Theme.of(context).primaryTextTheme.displayMedium,
+          style: styles.primaryTextTheme.displayMedium,
         ),
         const SizedBox(
           height: 24,
@@ -52,7 +57,7 @@ class OnboardingPanel extends StatelessWidget {
           margin: const EdgeInsets.only(left: 24, right: 24.0),
           child: Text(
             '''Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.''',
-            style: Theme.of(context).primaryTextTheme.bodyMedium,
+            style: styles.primaryTextTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
         ),

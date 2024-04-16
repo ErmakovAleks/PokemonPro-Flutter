@@ -20,14 +20,6 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   Color _backgroundColor = Colors.white;
 
-  Future<PaletteGenerator> _paletteGenerator(String sprite) async {
-    PaletteGenerator paletteGenerator =
-        await PaletteGenerator.fromImageProvider(
-      Image.network(sprite).image,
-    );
-    return paletteGenerator;
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -43,6 +35,18 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
+  Future<PaletteGenerator> _paletteGenerator(String sprite) async {
+    PaletteGenerator paletteGenerator =
+        await PaletteGenerator.fromImageProvider(
+      Image.network(sprite).image,
+    );
+    return paletteGenerator;
+  }
+
+  String _toBondFormat(int number) {
+    return '#${number.toString().padLeft(3, '0')}';
+  }
+
   List<Widget> _tags() {
     List<Widget> tags = [];
     for (var type in widget.details.types) {
@@ -53,6 +57,7 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _infoCell({required String name, required String? value}) {
+    ThemeData styles = Theme.of(context);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 11.5),
       child: Column(
@@ -60,11 +65,11 @@ class _DetailPageState extends State<DetailPage> {
         children: [
           Text(
             value ?? '',
-            style: Theme.of(context).primaryTextTheme.headlineMedium,
+            style: styles.primaryTextTheme.headlineMedium,
           ),
           Text(
             name,
-            style: Theme.of(context).primaryTextTheme.headlineSmall,
+            style: styles.primaryTextTheme.headlineSmall,
           ),
         ],
       ),
@@ -97,32 +102,37 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _hashTag(String name) {
+    ThemeData styles = Theme.of(context);
     return Container(
       margin: const EdgeInsets.fromLTRB(0, 0, 8, 8),
       padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
       decoration: const BoxDecoration(
         color: PokoColors.heather,
         borderRadius: BorderRadius.horizontal(
-            left: Radius.circular(100), right: Radius.circular(100)),
+          left: Radius.circular(100),
+          right: Radius.circular(100),
+        ),
       ),
       child: Text(
         name,
-        style: Theme.of(context).primaryTextTheme.bodyMedium,
+        style: styles.primaryTextTheme.bodyMedium,
       ),
     );
   }
 
   PreferredSizeWidget _appBar() {
+    ThemeData styles = Theme.of(context);
     return AppBar(
       backgroundColor: _backgroundColor,
       title: const Text('Base experience'),
-      titleTextStyle: Theme.of(context).appBarTheme.titleTextStyle,
+      titleTextStyle: styles.appBarTheme.titleTextStyle,
       leading: _leftButton(),
       actions: [_rightButton()],
     );
   }
 
   Widget _leftButton() {
+    ThemeData styles = Theme.of(context);
     return IconButton(
       onPressed: () => Navigator.of(context).pushNamed(AppRouteKeys.dashboard),
       icon: SizedBox(
@@ -130,18 +140,19 @@ class _DetailPageState extends State<DetailPage> {
         height: 24,
         child: Image.asset(
           PokoImages.back,
-          color: Theme.of(context).iconTheme.color,
+          color: styles.iconTheme.color,
         ),
       ),
     );
   }
 
   Widget _rightButton() {
+    ThemeData styles = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(right: 16),
       child: Text(
-        '#${widget.details.number.toString().padLeft(3, '0')}',
-        style: Theme.of(context).appBarTheme.titleTextStyle,
+        _toBondFormat(widget.details.number),
+        style: styles.appBarTheme.titleTextStyle,
       ),
     );
   }
@@ -171,13 +182,14 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _antropometrics() {
+    ThemeData styles = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
           widget.details.name,
-          style: Theme.of(context).primaryTextTheme.displayLarge,
+          style: styles.primaryTextTheme.displayLarge,
         ),
         const SizedBox(height: 4),
         Row(
@@ -296,13 +308,14 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _infoPanel() {
+    ThemeData styles = Theme.of(context);
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(24), topRight: Radius.circular(24)),
-          color: Theme.of(context).colorScheme.primaryContainer,
+          color: styles.colorScheme.primaryContainer,
         ),
         child: Align(
           alignment: Alignment.topCenter,
@@ -329,9 +342,11 @@ class _DetailPageState extends State<DetailPage> {
         height: 31,
         width: 31,
         decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(15.5)),
-            gradient: LinearGradient(
-                colors: [PokoColors.gradientFinish, PokoColors.gradientStart])),
+          borderRadius: BorderRadius.all(Radius.circular(15.5)),
+          gradient: LinearGradient(
+            colors: [PokoColors.gradientFinish, PokoColors.gradientStart],
+          ),
+        ),
         child: Center(
           child: Text(
             widget.details.training.baseExp,

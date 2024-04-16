@@ -26,8 +26,9 @@ class _DashboardSearchBarState extends State<DashboardSearchBar> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData styles = Theme.of(context);
     return Container(
-      color: Theme.of(context).colorScheme.primaryContainer,
+      color: styles.colorScheme.primaryContainer,
       height: 40,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -42,6 +43,7 @@ class _DashboardSearchBarState extends State<DashboardSearchBar> {
   }
 
   Widget _textField(BuildContext context) {
+    ThemeData styles = Theme.of(context);
     return TextField(
       controller: _controller,
       textAlignVertical: TextAlignVertical.top,
@@ -50,25 +52,26 @@ class _DashboardSearchBarState extends State<DashboardSearchBar> {
         floatingLabelBehavior: FloatingLabelBehavior.never,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.primaryContainer,
+            color: styles.colorScheme.primaryContainer,
           ),
           borderRadius: const BorderRadius.all(Radius.circular(20.0)),
         ),
         prefixIcon: const Icon(Icons.search),
         focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.onPrimaryContainer,
+              color: styles.colorScheme.onPrimaryContainer,
             ),
             borderRadius: const BorderRadius.all(Radius.circular(20.0))),
         filled: true,
         fillColor: Colors.white,
-        hintStyle: Theme.of(context).primaryTextTheme.labelSmall,
+        hintStyle: styles.primaryTextTheme.labelSmall,
       ),
-      style: Theme.of(context).primaryTextTheme.labelMedium,
+      style: styles.primaryTextTheme.labelMedium,
     );
   }
 
   Widget _cancelButton() {
+    ThemeData styles = Theme.of(context);
     return Visibility(
       maintainSize: false,
       maintainAnimation: true,
@@ -81,7 +84,7 @@ class _DashboardSearchBarState extends State<DashboardSearchBar> {
             alignment: Alignment.centerRight),
         child: Text(
           'Cancel',
-          style: Theme.of(context).primaryTextTheme.labelSmall,
+          style: styles.primaryTextTheme.labelSmall,
         ),
         onPressed: () {
           _controller.text = '';

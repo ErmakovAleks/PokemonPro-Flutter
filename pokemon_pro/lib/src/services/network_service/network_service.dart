@@ -6,12 +6,7 @@ import '../network_service/url_containable.dart';
 import '../network_service/network_session_processable.dart';
 
 class NetworkService implements NetworkSessionProcessable {
-  static final NetworkService _instance = NetworkService._();
   final Client _client = Client();
-
-  NetworkService._();
-
-  factory NetworkService.shared() => _instance;
 
   @override
   Future<Result<T>> sendRequest<T>(URLContainable<T> requestModel) async {

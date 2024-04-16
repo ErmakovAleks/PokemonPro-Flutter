@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../providers/dashboard_network_provider.dart';
+import '../providers/inherited_provider_container.dart';
+import '../services/network_service/network_service.dart';
 import '../screens/about_us_page.dart';
 import '../screens/dashboard_page.dart';
 import '../screens/detail_page.dart';
@@ -17,6 +20,7 @@ abstract class AppRouteKeys {
 
 // ignore: body_might_complete_normally_nullable, non_constant_identifier_names
 Route<dynamic>? AppRouter(RouteSettings settings) {
+  final NetworkService service = NetworkService();
   switch (settings.name) {
     case AppRouteKeys.aboutUs:
       return nativePageRoute(
@@ -24,9 +28,16 @@ Route<dynamic>? AppRouter(RouteSettings settings) {
         builder: (context) => const AboutUsPage(),
       );
     case AppRouteKeys.dashboard:
+      final DashboardNetworkProvider provider =
+          DashboardNetworkProvider(service: service);
       return nativePageRoute(
         settings: settings,
-        builder: (context) => const DashboardPage(),
+        builder: (context) {
+          return InheritedProviderContainer(
+            provider: provider,
+            child: const DashboardPage(),
+          );
+        },
       );
     case AppRouteKeys.onboarding:
       return nativePageRoute(

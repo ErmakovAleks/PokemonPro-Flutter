@@ -9,14 +9,6 @@ class DashboardMosaicTile extends StatelessWidget {
   final PokemonDetailModel details;
   const DashboardMosaicTile({required this.details, super.key});
 
-  Future<PaletteGenerator> _paletteGenerator() async {
-    PaletteGenerator paletteGenerator =
-        await PaletteGenerator.fromImageProvider(
-      Image.network('${details.sprite}').image,
-    );
-    return paletteGenerator;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,12 +28,25 @@ class DashboardMosaicTile extends StatelessWidget {
     );
   }
 
+  Future<PaletteGenerator> _paletteGenerator() async {
+    PaletteGenerator paletteGenerator =
+        await PaletteGenerator.fromImageProvider(
+      Image.network('${details.sprite}').image,
+    );
+    return paletteGenerator;
+  }
+
+  String _toBondFormat(int number) {
+    return '#${number.toString().padLeft(3, '0')}';
+  }
+
   Widget _serialNumber(BuildContext context) {
+    ThemeData styles = Theme.of(context);
     return Align(
       alignment: Alignment.centerRight,
       child: Text(
-        '#${details.number.toString().padLeft(3, '0')}',
-        style: Theme.of(context).primaryTextTheme.headlineSmall,
+        _toBondFormat(details.number),
+        style: styles.primaryTextTheme.headlineSmall,
       ),
     );
   }
@@ -60,9 +65,10 @@ class DashboardMosaicTile extends StatelessWidget {
   }
 
   Widget _title(BuildContext context) {
+    ThemeData styles = Theme.of(context);
     return Text(
       details.name,
-      style: Theme.of(context).primaryTextTheme.displaySmall,
+      style: styles.primaryTextTheme.displaySmall,
     );
   }
 
@@ -94,9 +100,10 @@ class DashboardMosaicTile extends StatelessWidget {
   }
 
   BoxDecoration _decoration(BuildContext context) {
+    ThemeData styles = Theme.of(context);
     return BoxDecoration(
       borderRadius: BorderRadius.circular(16),
-      color: Theme.of(context).brightness == Brightness.light
+      color: styles.brightness == Brightness.light
           ? Colors.white
           : PokoColors.abbey,
       boxShadow: const [

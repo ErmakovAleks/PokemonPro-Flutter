@@ -16,22 +16,6 @@ class OnboardingPage extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPage> {
   final _pageController = PageController(initialPage: 0);
   int _activePage = 0;
-  final List<Widget> _pages = [
-    const PageOne(),
-    const PageTwo(),
-    const PageThree(),
-  ];
-
-  void _updatePage(int page) {
-    setState(() {
-      _activePage = page;
-      _pageController.animateToPage(
-        page,
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeIn,
-      );
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +41,23 @@ class _OnboardingPageState extends State<OnboardingPage> {
         ),
       ],
     ));
+  }
+
+  final List<Widget> _pages = [
+    const PageOne(),
+    const PageTwo(),
+    const PageThree(),
+  ];
+
+  void _updatePage(int page) {
+    setState(() {
+      _activePage = page;
+      _pageController.animateToPage(
+        page,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeIn,
+      );
+    });
   }
 
   Widget _pageViewBuilder() {

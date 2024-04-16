@@ -5,11 +5,12 @@ class PageControl extends StatelessWidget {
   final int activePage;
   final void Function(int) onUpdatePage;
 
-  const PageControl(
-      {required this.pagesCount,
-      required this.activePage,
-      required this.onUpdatePage,
-      super.key});
+  const PageControl({
+    required this.pagesCount,
+    required this.activePage,
+    required this.onUpdatePage,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,15 +32,16 @@ class PageControl extends StatelessWidget {
   }
 
   Widget _dot(BuildContext context, int index) {
+    ColorScheme styles = Theme.of(context).colorScheme;
     return Container(
       width: 12,
       decoration: BoxDecoration(
         color: activePage == index
-            ? Theme.of(context).colorScheme.secondaryContainer
-            : Theme.of(context).colorScheme.tertiaryContainer,
+            ? styles.secondaryContainer
+            : styles.tertiaryContainer,
         border: Border.all(
           width: 1,
-          color: Theme.of(context).colorScheme.secondaryContainer,
+          color: styles.secondaryContainer,
         ),
         shape: BoxShape.circle,
       ),

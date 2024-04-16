@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import '../providers/inherited_provider_container.dart';
 import '../routes/router.dart';
 import '../widgets/poke_spinner.dart';
-import '../providers/source.dart';
 import '../widgets/dashboard_mosaic_tile.dart';
 import '../widgets/dashboard_list_tile.dart';
 import '../models/pokemon_list_model.dart';
@@ -19,19 +21,30 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   bool _isList = true;
   String _searchText = '';
-  final Source _provider = DashboardNetworkProvider();
-  late final Future<List<PokemonModel>?> _pokemonList;
-
-  void _onUpdateSearch(String text) {
-    setState(() {
-      _searchText = text;
-    });
-  }
+  bool _isLoading = false;
+  final List<PokemonModel> _allPokemons = [];
+  final StreamController<List<PokemonModel>?> _streamController =
+      StreamController<List<PokemonModel>?>();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
-    _pokemonList = _provider.pokemonList();
     super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _fetchData();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -39,16 +52,58 @@ class _DashboardPageState extends State<DashboardPage> {
     return Scaffold(
       appBar: _appBar(),
       body: _body(
-        pokemonList: _pokemonList,
-        provider: _provider,
         context: context,
       ),
     );
   }
 
-  FutureBuilder _pokemonTile(String name) {
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    if (currentScroll >= maxScroll * 0.75 && !_isLoading) {
+      _loadMoreData();
+    }
+  }
+
+  void _loadMoreData() {
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    _fetchData();
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _fetchData() async {
+    final DashboardNetworkProvider provider =
+        InheritedProviderContainer.of<DashboardNetworkProvider>(context)
+            .provider;
+
+    List<PokemonModel>? pokemonList = await provider.pokemonList();
+    if (pokemonList != null) {
+      _allPokemons.addAll(pokemonList);
+      _streamController.sink.add(pokemonList);
+    }
+  }
+
+  void _onUpdateSearch(String text) {
+    setState(() {
+      _searchText = text;
+    });
+  }
+
+  FutureBuilder _pokemonTile({
+    required String name,
+    required DashboardNetworkProvider provider,
+  }) {
     return FutureBuilder(
-      future: _provider.detail(name),
+      future: provider.detail(name),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: PokeSpinner());
@@ -93,8 +148,9 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   PreferredSizeWidget _appBar() {
+    ThemeData styles = Theme.of(context);
     return AppBar(
-      backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+      backgroundColor: styles.appBarTheme.backgroundColor,
       leading: _leftButton(context),
       actions: [
         _rightButton(context),
@@ -130,6 +186,7 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   PreferredSize _title() {
+    ThemeData styles = Theme.of(context);
     return PreferredSize(
       preferredSize: const Size.fromHeight(52),
       child: Container(
@@ -138,7 +195,7 @@ class _DashboardPageState extends State<DashboardPage> {
           alignment: Alignment.centerLeft,
           child: Text(
             'All Pokemon',
-            style: Theme.of(context).primaryTextTheme.bodyLarge,
+            style: styles.primaryTextTheme.bodyLarge,
           ),
         ),
       ),
@@ -146,11 +203,12 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _sliverAppBar() {
+    ThemeData styles = Theme.of(context);
     return SliverAppBar(
       automaticallyImplyLeading: false,
       floating: true,
       snap: true,
-      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      backgroundColor: styles.colorScheme.primaryContainer,
       flexibleSpace: FlexibleSpaceBar(
         title: DashboardSearchBar(
           onUpdateSearch: (text) => _onUpdateSearch(text),
@@ -160,22 +218,21 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _body(
-      {required Future<List<PokemonModel>?> pokemonList,
-      required Source provider,
-      required BuildContext context}) {
-    return FutureBuilder(
-      future: pokemonList,
+  Widget _body({required BuildContext context}) {
+    ThemeData styles = Theme.of(context);
+    return StreamBuilder(
+      stream: _streamController.stream,
       builder: (context, snapshot) {
         return Container(
-          color: Theme.of(context).colorScheme.primaryContainer,
+          color: styles.colorScheme.primaryContainer,
           child: CustomScrollView(
+            controller: _scrollController,
             slivers: [
               _sliverAppBar(),
               SliverToBoxAdapter(
                 child: Container(
                   height: 8,
-                  color: Theme.of(context).colorScheme.primaryContainer,
+                  color: styles.colorScheme.primaryContainer,
                 ),
               ),
               _pokemonSliver(snapshot),
@@ -189,8 +246,11 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget _pokemonSliver(AsyncSnapshot<List<PokemonModel>?> snapshot) {
     if (snapshot.connectionState == ConnectionState.waiting ||
         snapshot.hasData) {
-      List<PokemonModel>? filtered = snapshot.data
-          ?.where((element) => element.name.contains(_searchText))
+      // List<PokemonModel>? filtered = snapshot.data
+      //     ?.where((element) => element.name.contains(_searchText))
+      //     .toList();
+      List<PokemonModel>? filtered = _allPokemons
+          .where((element) => element.name.contains(_searchText))
           .toList();
       if (_isList) {
         return _sliverListLayout(filtered);
@@ -205,8 +265,14 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget _sliverListLayout(List<PokemonModel>? filtered) {
     return SliverFixedExtentList(
       delegate: SliverChildBuilderDelegate(
+        childCount: _allPokemons.length,
         (context, index) {
-          return _pokemonTile(filtered?[index].name ?? '');
+          return _pokemonTile(
+            name: filtered?[index].name ?? '',
+            provider:
+                InheritedProviderContainer.of<DashboardNetworkProvider>(context)
+                    .provider,
+          );
         },
       ),
       itemExtent: 143,
@@ -220,9 +286,13 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate(
+          childCount: _allPokemons.length,
           (context, index) {
             return _pokemonTile(
-              filtered?[index].name ?? '',
+              name: filtered?[index].name ?? '',
+              provider: InheritedProviderContainer.of<DashboardNetworkProvider>(
+                      context)
+                  .provider,
             );
           },
         ),

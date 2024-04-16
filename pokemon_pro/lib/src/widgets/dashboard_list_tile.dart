@@ -11,13 +11,18 @@ class DashboardListTile extends StatelessWidget {
 
   const DashboardListTile({required this.details, super.key});
 
-  List<Widget> tags() {
-    List<Widget> tags = [];
-    for (var type in details.types) {
-      tags.add(DashboardTag(type: type, option: TagOption.full));
-    }
-
-    return tags;
+  @override
+  Widget build(BuildContext context) {
+    ThemeData styles = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      color: styles.colorScheme.primaryContainer,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: _decoration(context),
+        child: _tileContent(context),
+      ),
+    );
   }
 
   Future<PaletteGenerator> _paletteGenerator() async {
@@ -28,23 +33,24 @@ class DashboardListTile extends StatelessWidget {
     return paletteGenerator;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-      color: Theme.of(context).colorScheme.primaryContainer,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: _decoration(context),
-        child: _tileContent(context),
-      ),
-    );
+  String _toBondFormat(int number) {
+    return '#${number.toString().padLeft(3, '0')}';
+  }
+
+  List<Widget> _tags() {
+    List<Widget> tags = [];
+    for (var type in details.types) {
+      tags.add(DashboardTag(type: type, option: TagOption.full));
+    }
+
+    return tags;
   }
 
   BoxDecoration _decoration(BuildContext context) {
+    ThemeData styles = Theme.of(context);
     return BoxDecoration(
       borderRadius: BorderRadius.circular(16),
-      color: Theme.of(context).brightness == Brightness.light
+      color: styles.brightness == Brightness.light
           ? Colors.white
           : PokoColors.abbey,
       boxShadow: const [
@@ -111,6 +117,7 @@ class DashboardListTile extends StatelessWidget {
   }
 
   Widget _info(BuildContext context) {
+    ThemeData styles = Theme.of(context);
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -118,13 +125,13 @@ class DashboardListTile extends StatelessWidget {
       children: [
         Text(
           details.name,
-          style: Theme.of(context).primaryTextTheme.displayMedium,
+          style: styles.primaryTextTheme.displayMedium,
         ),
         SingleChildScrollView(
-            scrollDirection: Axis.horizontal, child: Row(children: tags())),
+            scrollDirection: Axis.horizontal, child: Row(children: _tags())),
         Text(
-          '#${details.number.toString().padLeft(3, '0')}',
-          style: Theme.of(context).primaryTextTheme.headlineSmall,
+          _toBondFormat(details.number),
+          style: styles.primaryTextTheme.headlineSmall,
         ),
       ],
     );
