@@ -17,7 +17,6 @@ class DashboardNetworkProvider extends NetworkServiceContainable
 
   @override
   Future<List<PokemonModel>?> pokemonList() async {
-    print('<!> offset = $_offset');
     Result<PokemonListModel> response = await _networkService
         .sendRequest(PokemonListContainable(limit: 10, offset: _offset));
 

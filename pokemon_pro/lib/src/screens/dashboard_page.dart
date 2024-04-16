@@ -265,7 +265,7 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget _sliverListLayout(List<PokemonModel>? filtered) {
     return SliverFixedExtentList(
       delegate: SliverChildBuilderDelegate(
-        childCount: _allPokemons.length,
+        childCount: filtered?.length,
         (context, index) {
           return _pokemonTile(
             name: filtered?[index].name ?? '',
@@ -286,7 +286,7 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate(
-          childCount: _allPokemons.length,
+          childCount: filtered?.length,
           (context, index) {
             return _pokemonTile(
               name: filtered?[index].name ?? '',
